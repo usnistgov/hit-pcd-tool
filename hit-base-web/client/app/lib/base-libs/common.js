@@ -537,7 +537,7 @@ angular.module('format').factory('TestCaseService', function ($filter, $q, $http
 
   TestCaseService.prototype.buildTree = function (node) {
     if (node.type === 'TestStep') {
-      node.label = node.position + "." + node.name;
+      node.label = node.position + "." + node.name;     
     } else {
       node.label = node.name;
     }

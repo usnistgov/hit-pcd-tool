@@ -14,16 +14,16 @@
                 <span style="font-weight: bold; font-size: 20px">
                     Validation Result Information
                 </span>
-                <span class="pull-right">
+        <span class="pull-right">
                     <button class="btn btn-xs btn-primary" class="point" ng-click="close()"><i class="fa fa-times"></i>Close
                     </button>
                 </span>
     </div>
     <div class="modal-body">
         <div class="validation-result-info-content">
-            <div ng-if="appInfo.validationResultInfo != null" ng-bind-html="toHTML(appInfo.validationResultInfo)">
+            <div ng-if="domain.validationResultInfo != null" ng-bind-html="toHTML(domain.validationResultInfo)">
             </div>
-            <div ng-if="appInfo.validationResultInfo == null">
+            <div ng-if="domain.validationResultInfo == null">
                 No information available.
             </div>
         </div>
@@ -173,7 +173,7 @@
                 <span style="font-weight: bold; font-size: 20px">
                     Message Content
                 </span>
-                <span class="pull-right">
+        <span class="pull-right">
                     <button class="btn btn-xs btn-primary" ng-click="close()" type="button"
                             title="Close Dialog" class="point">
                         <i class="fa fa-times"></i>
@@ -201,59 +201,17 @@
 </script>
 
 
-<script type="text/ng-template" id="cf_profile_categories_render.html">
-  <div ui-tree-handle class="tree-node tree-node-content">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <i ng-if="node.nodes && node.nodes.length > 0" data-nodrag ng-click="toggle(this)" class="fa"
-           ng-class="{
-          'fa-caret-right': collapsed,
-          'fa-caret-down': !collapsed
-        }"></i>
-
-        <span ng-if="node.edit">
-      <input id="catNemo" required name="name" data-nodrag ng-model="node.name" style="width:50%"
-      >
-      <a class="btn btn-primary btn-xs" data-nodrag ng-click="saveCategory(node)"><span
-        class="fa fa-check"></span></a>
-    </span>
-
-        <span ng-if="!node.edit">
-     {{node.name}}
-
-    <span style="margin-left:5px">
-      <a title="Edit Category" class="point btn btn-primary btn-xs" data-nodrag ng-click="node.edit = true"><span
-        class="fa fa-pencil"></span></a>
-          <a title="Delete Category" class="point btn btn-danger btn-xs" data-nodrag ng-click="deleteCategory(node)"><span
-            class="fa fa-trash"></span></a>
-
-    </span>
-    </span>
-
-        <a title="Add New Group" class="point pull-right btn btn-success btn-xs" style="margin-right:10px" data-nodrag
-           ng-click="addNewGroup(node)"><span
-          class="fa fa-plus"></span>Group</a>
-      </div>
-      <div class="panel-body" ng-class="{hidden: collapsed}">
-
-        <ol ui-tree-nodes ng-model="node.nodes">
-          <li ng-repeat="node in node.nodes" ui-tree-node ng-include="'cf_profile_group_render.html'">
-          </li>
-        </ol>
-      </div>
-    </div>
-  </div>
-</script>
-
 <script type="text/ng-template" id="cf_profile_group_render.html">
-  <div ui-tree-handle class="tree-node tree-node-content">
-    <a ng-class="{'selected': selectedTP != null && selectedTP.id === node.id}" data-nodrag ng-click="selectGroup(node)"
-       class="point">{{node.name}}</a>
-    <a title="Delete Group" class="point pull-right btn btn-danger btn-xs" data-nodrag ng-click="deleteGroup(node.id)"><span
-      class="fa fa-trash"></span></a>
-    <!--<a class="pull-right btn btn-primary btn-xs" data-nodrag ng-click="newSubItem(this)" style="margin-right: 8px;"><span-->
-    <!--class="glyphicon glyphicon-plus"></span></a>-->
-  </div>
+    <div ui-tree-handle class="tree-node tree-node-content">
+        <a ng-class="{'selected': selectedTP != null && selectedTP.id === node.id}" data-nodrag
+           ng-click="selectGroup(node)"
+           class="point">{{node.name}}</a>
+        <a title="Delete Group" class="point pull-right btn btn-danger btn-xs" data-nodrag
+           ng-click="deleteGroup(node.id)"><span
+                class="fa fa-trash"></span></a>
+        <!--<a class="pull-right btn btn-primary btn-xs" data-nodrag ng-click="newSubItem(this)" style="margin-right: 8px;"><span-->
+        <!--class="glyphicon glyphicon-plus"></span></a>-->
+    </div>
 </script>
 
 
@@ -269,50 +227,120 @@
 
 
 <script type="text/ng-template" id="cb_testcase_node_render.html">
-  <div ui-tree-handle  class="tree-node tree-node-content">
-    <i ng-if="node.children && node.children.length > 0" data-nodrag ng-click="toggle(this)"><span
-      class="fa"
-      ng-class="{
+    <div ui-tree-handle class="tree-node tree-node-content">
+        <i ng-if="node.children && node.children.length > 0" data-nodrag ng-click="toggle(this)"><span
+                class="fa"
+                ng-class="{
           'fa-caret-right': collapsed,
           'fa-caret-down': !collapsed
         }"></span></i>
-    <i data-nodrag ng-class="get_icon_type(node)"></i>
+        <i data-nodrag ng-class="get_icon_type(node)"></i>
 
-    <span ng-if="node.edit">
+        <!--<span ng-if="node.edit">-->
 
-                            <input id="nodeName" required name="name" data-nodrag ng-model="node.editName" style="width:50%">
-                            <a title="Reset" class="btn btn-warning btn-xs" data-nodrag
-                               ng-click="resetNodeName(node)"><span
-                              class="fa fa-times"></span></a>
-                            <a title="Save" class="btn btn-primary btn-xs" data-nodrag
-                               ng-click="saveNodeName(node)"><span
-                              class="fa fa-check"></span></a>
-    </span>
+        <!--<input id="nodeName" required name="name" data-nodrag ng-model="node.editName" style="width:50%">-->
+        <!--<a title="Reset" class="btn btn-warning btn-xs" data-nodrag-->
+        <!--ng-click="resetNodeName(node)"><span-->
+        <!--class="fa fa-times"></span></a>-->
+        <!--<a title="Save" class="btn btn-primary btn-xs" data-nodrag-->
+        <!--ng-click="saveNodeName(node)"><span-->
+        <!--class="fa fa-check"></span></a>-->
+        <!--</span>-->
 
-    <span ng-if="!node.edit">
+        <span>
                               <span data-nodrag title="Transport supported" class="label label-danger label-icon"
                                     ng-show="node.type === 'TestPlan' && node.transport === true">T</span>
     <a data-nodrag ng-click="selectTestNode(node)" class="point">{{node.label}}</a>
-     <a class="point btn btn-default btn-xs" data-nodrag ng-click="editNodeName(node)"><span
-       class="fa fa-pencil"></span></a>
+            <!--<a class="point btn btn-default btn-xs" data-nodrag ng-click="editNodeName(node)"><span-->
+            <!--class="fa fa-pencil"></span></a>-->
 
 
-    <a class="point pull-right btn btn-danger btn-xs" data-nodrag ng-click="deleteTestNode(node)"><span
-      class="fa fa-trash"></span></a>
+            <!--<a class="point pull-right btn btn-danger btn-xs" data-nodrag ng-click="deleteTestNode(node)"><span-->
+            <!--class="fa fa-trash"></span></a>-->
 
                             </span>
-    <!---->
+        <!---->
 
 
-    <!--&lt;!&ndash;<span ng-show="row.branch.transport === true" class="badge">T</span>&ndash;&gt;-->
-    <!--<span data-nodrag title="Transport supported" class="label label-danger label-icon"-->
-    <!--ng-show="node.type === 'TestPlan' && node.transport === true">T</span>-->
-    <!--<a data-nodrag ng-click="selectTestNode(node)" class="point">{{node.label}}</a>-->
-    <!--<a class="point pull-right btn btn-danger btn-xs" data-nodrag ng-click="deleteTreeNode(node)"><span-->
-    <!--class="fa fa-trash"></span></a>-->
-  </div>
-  <ol ui-tree-nodes="" ng-model="node.children" ng-class="{hidden: collapsed}">
-    <li ng-repeat="node in node.children" ui-tree-node ng-include="'cb_testcase_node_render.html'">
-    </li>
-  </ol>
+        <!--&lt;!&ndash;<span ng-show="row.branch.transport === true" class="badge">T</span>&ndash;&gt;-->
+        <!--<span data-nodrag title="Transport supported" class="label label-danger label-icon"-->
+        <!--ng-show="node.type === 'TestPlan' && node.transport === true">T</span>-->
+        <!--<a data-nodrag ng-click="selectTestNode(node)" class="point">{{node.label}}</a>-->
+        <!--<a class="point pull-right btn btn-danger btn-xs" data-nodrag ng-click="deleteTreeNode(node)"><span-->
+        <!--class="fa fa-trash"></span></a>-->
+    </div>
+    <ol ui-tree-nodes="" ng-model="node.children" ng-class="{hidden: collapsed}">
+        <li ng-repeat="node in node.children" ui-tree-node ng-include="'cb_testcase_node_render.html'">
+        </li>
+    </ol>
+</script>
+
+
+<script type="text/ng-template" id="cf_testcase_node_render.html">
+    <div ui-tree-handle class="tree-node tree-node-content">
+        <i ng-if="node.children && node.children.length > 0" data-nodrag ng-click="toggle(this)"><span
+                class="fa"
+                ng-class="{
+          'fa-caret-right': collapsed,
+          'fa-caret-down': !collapsed
+        }"></span></i>
+
+        <!--<a title="Delete Group" class="point pull-right btn btn-default btn-xs" style="margin-right:5px"  data-nodrag-->
+        <!--ng-click="editGroup(node)"><i-->
+        <!--class="fa fa-trash"></i></a>-->
+
+        <!--<a title="Delete Group" class="point pull-right btn btn-danger btn-xs" style="margin-right:5px"  data-nodrag-->
+        <!--ng-click="deleteGroup(node)"><i-->
+        <!--class="fa fa-trash"></i></a>-->
+
+        <a data-nodrag ng-show="node.type === 'TestPlan'"
+           ng-class="{'selected': testcase != null && testcase.id === node.id && testcase.type === node.type}"
+           ng-click="selectGroup(node)"
+           class="point">{{node.name}}</a>
+
+        <a data-nodrag ng-show="node.type !== 'TestPlan'"
+           ng-class="{'selected': testcase != null && testcase.id === node.id && testcase.type === node.type}"
+           ng-click="selectGroup(node)"
+           class="point">{{node.position}}.{{node.name}}</a>
+        <a data-nodrag title="Add New Sub Profile Group" ng-click="addNewTestStepGroup(node)"
+           class="point pull-right btn btn-success btn-xs" style="margin-right:10px">
+            <i
+                    class="fa fa-plus"></i>Sub Profile Group</a>
+
+
+    </div>
+    <ol ui-tree-nodes ng-model="node.children" ng-class="{hidden: collapsed}">
+        <li ng-repeat="node in node.children" ui-tree-node ng-include="'cf_testcase_node_render.html'">
+        </li>
+    </ol>
+
+</script>
+
+
+<script type="text/ng-template" id="UnknownDomain.html">
+    <div class="modal-header">
+        Tool Scope Selection
+    </div>
+    <div class="modal-body error-dlg">
+        <div style="margin-bottom: 20px">
+            <!--<p style="color:red;text-align:center">No Tool Scope selected</p>-->
+            <!--<hr />-->
+            <span style="">Select Tool Scope:</span>
+            <select class="" name="selectedDomain"
+                    ng-change="selectDomain()"
+                    ng-model="selectedDomain.domain" required
+            >
+                <option ng-repeat="dom in appInfo.domains"
+                        value="{{dom.domain}}">{{dom.name}}
+                </option>
+            </select>
+            Or
+            <button ng-if="isLoggedIn()" ng-click="createNewDomain()" class="btn btn-primary btn-md"
+                    title="Create New Tool Scope"><i class="fa fa-plus"></i>Create
+            </button>
+            <a  ng-if="!isLoggedIn()" class="point" ng-click="loginReq()"> Sign In</a>
+        </div>
+
+
+    </div>
 </script>

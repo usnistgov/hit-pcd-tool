@@ -7,19 +7,28 @@
         top.location = self.location;
     }
 </script>
-<div class="iz-home">
+
+<div ng-show="loadingDomain" style="with:400px;text-align:center">
+  <i class="fa fa-circle-o-notch fa-spin fa-3x"></i>
+</div>
+
+<div ng-show="!loadingDomain">
+
+  <div class="iz-home">
     <div class="container" style="margin-bottom: 20px">
-        <div class="row">
-            <div class="panel panel-info">
-                <!-- Default panel contents -->
-                <div class="panel-heading">
-                    <i class="glyphicon glyphicon-list"></i> <b>{{appInfo.homeTitle}}</b>
-                </div>
-                <div class="panel-body">
-                    <div ng-bind-html="toHTML(appInfo.homeContent)">
-                    </div>
-                </div>
+      <div class="row">
+        <div class="panel panel-info">
+          <!-- Default panel contents -->
+          <div class="panel-heading">
+            <i class="glyphicon glyphicon-list"></i> <b>{{domain.homeTitle}}</b>
+          </div>
+          <div class="panel-body">
+            <div ng-bind-html="toHTML(domain.homeContent)">
             </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
+
 </div>

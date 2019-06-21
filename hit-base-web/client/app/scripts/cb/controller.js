@@ -964,7 +964,8 @@ angular.module('cb')
 
     $scope.error = null;
     $scope.collapsed = false;
-
+    $scope.debugmode = false;
+    
     var testCaseService = new TestCaseService();
 
     $scope.initTestCase = function () {
@@ -1760,6 +1761,7 @@ angular.module('cb')
 
 
     $scope.get_icon_type = function (node) {
+    	console.log("coucou"+ node.type);
       if (node.type === 'TestObject' || node.type === 'TestStep') {
         var connType = node['testingType'];
         return connType === 'TA_MANUAL' || connType === 'SUT_MANUAL' ? 'fa fa-wrench' : connType === 'SUT_RESPONDER' || connType === 'SUT_INITIATOR' ? 'fa fa-arrow-right' : connType === 'TA_RESPONDER' || connType === 'TA_INITIATOR' ? 'fa fa-arrow-left' : 'fa fa-check-square-o';
@@ -1767,7 +1769,7 @@ angular.module('cb')
         return '';
       }
     };
-
+        
 
     $scope.selectTP = function () {
       $scope.loadingTP = true;

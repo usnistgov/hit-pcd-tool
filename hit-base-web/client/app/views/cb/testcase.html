@@ -85,7 +85,11 @@
                 <div class="col-md-12">
                   <i class="glyphicon glyphicon-list"></i>
                   Test Cases
-                  <button title="Hide Test Cases" class="btn btn-xs btn-info pull-right"
+                  <button title="Show Debug information" class="btn btn-xs btn-info pull-right"
+                        ng-click="debugmode = !debugmode">
+                  <i style="color:red" class="fa fa-eye"></i>
+                </button>
+                  <button title="Hide Test Cases" class="btn btn-xs btn-info pull-right" style="margin-right:5px"
                           ng-click="collapsed = !collapsed">
                     <i class="fa fa-caret-left"></i>
                   </button>
@@ -128,7 +132,7 @@
                       <div ng-show="testCases != null && testCases.length > 0">
                         <testcase-tree tree-control="tree" icon-leaf=""
                                        is-selectable="isSelectable(branch)"
-                                       on-select="selectTestCase(branch)"></testcase-tree>
+                                       on-select="selectTestCase(branch)" debugmode=debugmode></testcase-tree>
                       </div>
                       <div ng-show="testCases == null || testCases.length == 0">
                         No Test Case Available

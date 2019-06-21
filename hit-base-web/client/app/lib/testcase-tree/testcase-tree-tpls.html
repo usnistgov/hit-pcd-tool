@@ -11,7 +11,7 @@
                      <i ng-class="get_icon_type(row.branch)"></i>
                     <!--<span ng-show="row.branch.transport === true" class="badge">T</span>-->
                       <span title="Transport supported" class="label label-danger label-icon" ng-show="row.branch.type === 'TestPlan' && row.branch.transport === true">T</span>
-                     <span ng-bind-html="::row.label"></span>  </span>
+                     <span ng-bind-html="::row.label"></span> <span ng-show="debugmode && row.branch.type === 'TestStep'" style="color:red" ng-bind-html="::row.branch.testContext.id"></span> <span ng-show="debugmode && row.branch.type === 'TestPlan'" style="color:red" ng-bind-html="::row.branch.id"></span> </span>
                 </a>
             <span ng-if="!is_node_selectable(row.branch)" class="nopointer"
                     >
