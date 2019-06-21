@@ -24,7 +24,7 @@
     
 	<context-param>
 		<param-name>webAppRootKey</param-name>
-		<param-value>hit-base-tool</param-value>
+		<param-value>gvt-tool</param-value>
 	</context-param>
 	<error-page>
 		<error-code>404</error-code>
@@ -44,5 +44,9 @@
 		<location>/InvalidAppState.html</location>
 	</error-page>
 
+	<context-param>
+           <param-name>spring.profiles.default</param-name>
+           <param-value>development</param-value>
+    </context-param>
 </web-app>
 	

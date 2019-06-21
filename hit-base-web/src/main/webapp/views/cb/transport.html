@@ -49,7 +49,7 @@
                 <td><b>Action</b></td>
                 <td>
                              <span ng-show="testStep.testingType === 'SUT_INITIATOR'">
-                                <span ng-show="transport.configs[domain][protocol].data.sutInitiator && transport.configs[domain][protocol].data.sutInitiator != null">
+                                <span ng-show="transport.configs[protocol].data.sutInitiator && transport.configs[protocol].data.sutInitiator != null">
 
                                   <div class="btn-group" role="group" aria-label="Listener">
 
@@ -75,7 +75,7 @@
                                     </button>
 
                                 </span>
-                                <span ng-show="!transport.configs[domain][protocol].data.sutInitiator || transport.configs[domain][protocol].data.sutInitiator === null">
+                                <span ng-show="!transport.configs[protocol].data.sutInitiator || transport.configs[protocol].data.sutInitiator === null">
                                     No configuration Information Available
                                 </span>
                             </span>
@@ -85,12 +85,12 @@
                                   </span>
 
                   <span ng-show="testStep.testingType === 'TA_INITIATOR'">
-                                <span class="" ng-show="transport.configs[domain][protocol].data.taInitiator && transport.configs[domain][protocol].data.taInitiator != null">
+                                <span class="" ng-show="transport.configs[protocol].data.taInitiator && transport.configs[protocol].data.taInitiator != null">
                                     <button type="button" ng-click="send()" ng-disabled="isTestCaseCompleted() || !hasUserContent() || connecting || !transportButtonForm.protocolSelect.$valid" title="Send" class="btn btn-xs btn-success">
                                         Send <i class="fa fa-share-square fa-fw"></i>
                                     </button>
                                 </span>
-                                <span class="" ng-show="!transport.configs[domain][protocol].data.taInitiator || transport.configs[domain][protocol].data.taInitiator === null">
+                                <span class="" ng-show="!transport.configs[protocol].data.taInitiator || transport.configs[protocol].data.taInitiator === null">
                                     No Configuration Information Found.
                                 </span>
                             </span>

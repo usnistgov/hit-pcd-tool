@@ -234,7 +234,32 @@ angular.module('cb').factory('CBTestPlanManager', ['$q', '$http',
           }
         );
         return delay.promise;
-      }
+      },
+      saveZip:  function (token,domain) {
+          var delay = $q.defer();
+          $http.post("api/cb/management/saveZip/", {"token": token,"domain":domain}).then(
+            function (object) {
+              delay.resolve(angular.fromJson(object.data));
+            },
+            function (response) {
+              delay.reject(response.data);
+            }
+          );
+
+          return delay.promise;
+        },
+        unpublishTestPlan:  function (testPlanId) {
+            var delay = $q.defer();
+            $http.post('api/cb/management/testPlans/'+ testPlanId + '/unpublish').then(
+                function (object) {
+                    delay.resolve(angular.fromJson(object.data));
+                },
+                function (response) {
+                    delay.reject(response.data);
+                }
+            );
+            return delay.promise;
+        }
 
 
 

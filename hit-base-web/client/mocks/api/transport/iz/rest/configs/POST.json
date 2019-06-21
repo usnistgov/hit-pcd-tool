@@ -1,0 +1,19 @@
+{
+  "id": 32358,
+  "protocol": "rest",
+  "userId": 32357,
+  "sutInitiator": {
+    "faultPassword": "rest_225",
+    "password": "rest_225",
+    "endpoint": "https://hl7v2-iz-r1.5-testing.nist.gov:8098/iztool/ws/iisService",
+    "facilityID": "rest_225",
+    "faultUsername": "rest_225",
+    "username": "rest_225"
+  },
+  "taInitiator": {
+    "password": "rest",
+    "facilityID": "rest",
+    "username": "rest",
+    "endpoint": "https://rest/ws/iisService"
+  }
+}

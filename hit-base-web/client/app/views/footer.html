@@ -1,11 +1,11 @@
 <style id="antiClickjack">body{display:none !important;}</style>
 <script type="text/javascript">
-  if (self === top) {
-    var antiClickjack = document.getElementById("antiClickjack");
-    antiClickjack.parentNode.removeChild(antiClickjack);
-  } else {
-    top.location = self.location;
-  }
+    if (self === top) {
+        var antiClickjack = document.getElementById("antiClickjack");
+        antiClickjack.parentNode.removeChild(antiClickjack);
+    } else {
+        top.location = self.location;
+    }
 </script>
 <div id="footer">
   <table>
@@ -22,7 +22,8 @@
           <ul>
             <li>Date: {{appInfo.date |  date: 'MM/dd/yyyy HH:mm:ss'}} </li>
             <li>Application Version: {{appInfo.version}}</li>
-            <li>Resource Bundle Version:{{appInfo.rsbVersion}}</li>
+            <li ng-if="domain.rsbVersion != null && domain.rsbVersion != ''">Resource Bundle Version:{{domain.rsbVersion}}</li>
+            <li ng-if="domain.igVersion != null && domain.igVersion != ''">Ig Version:{{domain.igVersion}}</li>
           </ul>
         </div>
       </td>
