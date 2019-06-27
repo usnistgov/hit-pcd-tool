@@ -1460,6 +1460,81 @@ angular.module('cf')
                 });
         };
 
+        $scope.unPublishGroup = function () {
+            $scope.error = null;
+            $scope.executionError = [];
+            var modalInstance = $modal.open({
+                templateUrl: 'views/cf/manage/confirm-unpublish-group.html',
+                controller: 'ConfirmDialogCtrl',
+                size: 'md',
+                backdrop: 'static',
+                keyboard: false
+            });
+            modalInstance.result.then(
+                function (result) {
+                    if (result) {
+                        $scope.loading = true;
+                        $scope.executionError = null;
+                        $scope.loading = true;
+                        $scope.error = null;
+                        $scope.executionError = [];
+
+                        CFTestPlanManager.saveTestPlan("hl7v2", "USER", $scope.token, $scope.getUpdatedProfiles(), $scope.getRemovedProfiles(), $scope.getAddedProfiles(), $scope.testcase).then(function (result) {
+                            if (result.status === "SUCCESS") {
+                                CFTestPlanManager.unPublishTestPlan($scope.testcase.groupId).then(function (result) {
+                                    if (result.status === "SUCCESS") {
+                                        $scope.selectedNode = $scope.testCases[0];
+                                        if ($scope.selectedNode != null) {
+                                            $scope.selectedNode['name'] = $scope.testcase['name'];
+                                            $scope.selectedNode['description'] = $scope.testcase['description'];
+                                            var testPlan = $scope.findTestPlan($scope.selectedNode.id, $scope.existingTestPlans);
+                                            testPlan.name = $scope.testcase['name'];
+                                            testPlan.description = $scope.testcase['description'];
+                                            Notification.success({
+                                                message: "Profile Group saved successfully!",
+                                                templateUrl: "NotificationSuccessTemplate.html",
+                                                scope: $rootScope,
+                                                delay: 5000
+                                            });
+
+                                            $scope.uploaded = false;
+                                            $scope.profileMessages = [];
+                                            $scope.profileMessagesTmp = [];
+                                            $scope.oldProfileMessages = [];
+                                            $scope.tmpNewMessages = [];
+                                            $scope.tmpOldMessages = [];
+                                            $scope.originalOldProfileMessages = [];
+                                            $scope.originalProfileMessages = [];
+
+
+                                            $scope.selectedScope.key = 'USER';
+                                            $scope.selectScope();
+                                            $scope.selectGroup($scope.selectedNode);
+                                            Notification.success({
+                                                message: "Profile Group has been successfully published !",
+                                                templateUrl: "NotificationSuccessTemplate.html",
+                                                scope: $rootScope,
+                                                delay: 5000
+                                            });
+                                            $scope.afterSave($scope.token);
+                                        }
+                                    } else {
+                                        $scope.executionError.push(response.debugError);
+                                    }
+                                    $scope.loading = false;
+                                }, function (error) {
+                                    $scope.loading = false;
+                                    $scope.executionError.push(error.data);
+                                });
+                            }
+                        }, function (error) {
+                            $scope.loading = false;
+                            $scope.executionError.push(error.data);
+                        });
+                    }
+                });
+        };
+
 
         $scope.saveGroup = function (node) {
             if (node.type === 'TestPlan') {

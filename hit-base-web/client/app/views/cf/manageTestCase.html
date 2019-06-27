@@ -163,7 +163,7 @@
                     Type: </label>
                   <div class="btn-group btn-group-md" id="selectedScope" role="group" aria-label="..."
                        style="margin-right: 10px;">
-                    <button class="btn btn-cf-outline" ng-repeat="tpScope in groupScopes"
+                    <button class="btn btn-cf-outline" ng-repeat="tpScope in allGroupScopes"
                             ng-click="selectedScope.key = tpScope.key; selectScope();"
                             ng-class="{'active':tpScope.key == selectedScope.key}"
                     >{{::tpScope.name}}
@@ -483,12 +483,18 @@
                                   ng-click="deleteGroup(selectedNode)"><i class="fa fa-trash"></i>Delete</button>
 
                            <button
-                             ng-show="testcase.scope === 'USER' && testcase.type =='TestPlan' && (isAdmin() || isSupervisor())"
+                             ng-show="testcase.scope === 'USER' && testcase.type =='TestPlan' && (isAdmin() || isPublisher())"
                              type="button" class="btn btn-md btn-primary" ng-click="publishGroup()"
                              ng-disabled="tsForm.$invalid || loading">
                         <i class="fa fa-paper-plane"></i> Make Public
                       </button>
 
+                      <button ng-show="testcase.scope === 'GLOBAL' && testcase.type =='TestPlan' && (isAdmin() || isPublisher())" 
+                      	type="button" class="btn btn-md btn-primary" ng-click="unPublishGroup()" 
+                      	ng-disabled="tsForm.$invalid || loading">
+                        <i class="fa fa-paper-plane"></i> Make Private
+                      </button>
+						
 
                     </span>
 

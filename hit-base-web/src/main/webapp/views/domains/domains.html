@@ -343,6 +343,18 @@
                     </div>
                   </div>
                 </tab>
+                <tab active="tabs[6]">
+                  <tab-heading>
+                    <i class="fa fa-list-alt"></i>Validation Configuration
+                  </tab-heading>
+                  <div class="domain-content">
+                    <div class="form-group control-group">
+                      <div class="controls col-md-12">
+                    <textarea ng-disabled="userDomain.scope === 'GLOBAL' && (!isAdmin() && !isPublisher())" class="form-control" name="domainValidationResultInfo" id="domainValidationResultInfo" rows="15" cols="15" ng-model="userDomain.validationConfiguration"></textarea>
+                      </div>
+                    </div>
+                  </div>
+                </tab>
               </tabset>
 
               <hr>
@@ -350,7 +362,7 @@
               <div style="margin-top:30px;margin-bottom:30px">
             <span class="pull-left" style="">
               <button title="Reset" type="button" ng-disabled="userDomain.scope === 'GLOBAL' && (!isAdmin() && !isPublisher())" class="btn btn-md btn-danger" ng-click="deleteDomain()">
-                                    <i class="fa fa-check"></i>Delete
+                                    <i class="fa fa-check"></i>Delete Test Scope
                                 </button>
             </span>
 

@@ -334,9 +334,6 @@ angular.module('cf').factory('CFTestPlanManager', ['$q', '$http',
         return delay.promise;
       },
 
-
-
-
       publishTestPlan:  function (groupId) {
         var delay = $q.defer();
         $http.post('api/cf/management/testPlans/'+ groupId + '/publish').then(
@@ -348,7 +345,21 @@ angular.module('cf').factory('CFTestPlanManager', ['$q', '$http',
           }
         );
         return delay.promise;
-      }
+      },
+      
+      unPublishTestPlan:  function (groupId) {
+          var delay = $q.defer();
+          $http.post('api/cf/management/testPlans/'+ groupId + '/unPublish').then(
+            function (object) {
+              delay.resolve(angular.fromJson(object.data));
+            },
+            function (response) {
+              delay.reject(response.data);
+            }
+          );
+          return delay.promise;
+        }
+
 
     };
     return manager;

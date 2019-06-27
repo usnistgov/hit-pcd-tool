@@ -24,8 +24,9 @@
         <span class="pull-right" style="margin-top:10px"
               ng-show="appInfo.domains != null && appInfo.domains.length > 0">
 
-        <span ng-if="isAuthenticated()">
-        <label style="color:white">Tool Scope:</label>
+        	<label style="color:white">Tool Scope<span ng-if="appInfo.domains.length > 1">s</span>:</label>
+        <span ng-if="isAuthenticated()">        
+
 
         <div class="btn-group" ng-class='{open: open}'>
         <button class="btn btn-sm" ng-click='open=!open'>

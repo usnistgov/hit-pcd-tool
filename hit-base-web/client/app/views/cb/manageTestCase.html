@@ -34,7 +34,7 @@
 
             <div class="btn-group btn-group-md" id="selectedScope" role="group" aria-label="..."
                  style="margin-right: 10px;">
-              <button class="btn btn-cf-outline" ng-repeat="tpScope in testPlanScopes"
+              <button class="btn btn-cf-outline" ng-repeat="tpScope in allTestPlanScopes"
                       ng-click="selectedScope.key = tpScope.key; selectScope();"
                       ng-class="{'active':tpScope.key == selectedScope.key}"
               >{{::tpScope.name}}
@@ -174,7 +174,7 @@
                                  <!--</button>-->
 
                                    <button title="Make Test Plan Public"
-                                           ng-show="selectedTestCase.scope === 'USER'&& (isAdmin() || isSupervisor())"
+                                           ng-show="selectedTestCase.scope === 'USER'&& (isAdmin() || isPublisher())"
                                            type="button"
                                            class="btn btn-xs btn-success"
                                            ng-click="publishTestPlan(selectedTestCase)">
@@ -182,7 +182,7 @@
                                 </button>
 
                                   <button title="Make Test Plan Private"
-                                          ng-show="selectedTestCase.scope === 'GLOBAL' && (isAdmin() || isSupervisor())"
+                                          ng-show="selectedTestCase.scope === 'GLOBAL' && (isAdmin() || isPublisher())"
                                           type="button"
                                           class="btn btn-xs btn-success"
                                           ng-click="unpublishTestPlan(selectedTestCase)">
