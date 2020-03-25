@@ -269,7 +269,7 @@
                     if (scope.treeControl != null) {
                         if (angular.isObject(scope.treeControl)) {
                             tree = scope.treeControl;
-
+                            
                             tree.build_all = function (treeData) {
                                 scope.treeData = treeData;
                                 on_treeData_change();

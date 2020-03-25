@@ -34,12 +34,12 @@ body {
 						</button>
 						<ul class="dropdown-menu">
 							<li class="dropdown-header" ng-if="domainsByOwner['my'].length > 0">My Tool Scopes</li>
-							<li ng-show="domainsByOwner['my'].length > 0" ng-click="appInfo.selectedDomain = dom.domain; selectDomain(appInfo.selectedDomain)" ng-class="{'domain-selected': domain.domain === dom.domain, 'disabled': domain.domain === dom.domain}" ng-repeat="dom in domainsByOwner['my']"><a href="#"> <span style="color: #438007" ng-show="dom.scope === 'GLOBAL'"><i class="fa fa-circle fa-fw"></i></span> <span style="color: #ff240b" ng-show="dom.scope === 'USER'"><i class="fa fa-circle fa-fw"></i></span> {{dom.name}}
+							<li ng-show="domainsByOwner['my'].length > 0" ng-click="appInfo.selectedDomain = dom.domain; selectDomain(appInfo.selectedDomain)" ng-class="{'domain-selected': domain.domain === dom.domain, 'disabled': domain.domain === dom.domain}" ng-repeat="dom in domainsByOwner['my'] | orderBy:'name'"><a href="#"> <span style="color: #438007" ng-show="dom.scope === 'GLOBAL'" title="public"><i class="fa fa-circle fa-fw"></i></span> <span style="color: #ff240b" ng-show="dom.scope === 'USER'" title="private"><i class="fa fa-circle fa-fw"></i></span> {{dom.name}}
 							</a></li>
 							<li class="dropdown-header" ng-if="domainsByOwner['others'].length > 0">Others Tool
 								Scopes</li>
-							<li ng-show="domainsByOwner['others'].length > 0" ng-click="appInfo.selectedDomain = dom.domain; selectDomain(appInfo.selectedDomain)" ng-class="{'domain-selected': domain.domain === dom.domain}" ng-repeat="dom in domainsByOwner['others']"><a href="#">
-									<span style="color: #438007" ng-show="dom.scope === 'GLOBAL'"><i class="fa fa-circle fa-fw"></i></span> <span style="color: #ff240b" ng-show="dom.scope === 'USER'"><i class="fa fa-circle fa-fw"></i></span> {{dom.name}}
+							<li ng-show="domainsByOwner['others'].length > 0" ng-click="appInfo.selectedDomain = dom.domain; selectDomain(appInfo.selectedDomain)" ng-class="{'domain-selected': domain.domain === dom.domain}" ng-repeat="dom in domainsByOwner['others'] | orderBy:'name'"><a href="#">
+									<span style="color: #438007" ng-show="dom.scope === 'GLOBAL'" title="public"><i class="fa fa-circle fa-fw"></i></span> <span style="color: #ff240b" ng-show="dom.scope === 'USER'" title="private"><i class="fa fa-circle fa-fw"></i></span> {{dom.name}}
 							</a></li>
 						</ul>
 					</div>

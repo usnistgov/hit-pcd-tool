@@ -785,7 +785,7 @@ angular.module('main').controller('MainCtrl',
                 };
                 DomainsManager.getDomains().then(function (domains) {
                     $rootScope.appInfo.domains = domains;
-                    if ($rootScope.appInfo.domains != null) {
+                    if ($rootScope.appInfo.domains != null) {                    
                 		$rootScope.initDomainsByOwner();
                     if ($rootScope.appInfo.domains.length === 1) {
                         domainFound = $rootScope.appInfo.domains[0].domain;
@@ -820,14 +820,13 @@ angular.module('main').controller('MainCtrl',
                             
                             
                             
-                            //CACHE preload thingies.
-                            
-                            CachingService.cacheCBTestPlans("GLOBAL",$rootScope.domain.domain);
-                            CachingService.cacheCFTestPlans("GLOBAL",$rootScope.domain.domain);
-                            if (userInfoService.isAuthenticated() === true) { 
-                            	CachingService.cacheCBTestPlans("USER",$rootScope.domain.domain);
-                                CachingService.cacheCFTestPlans("USER",$rootScope.domain.domain);
-                            }
+                            //CACHE preload thingies.                           
+//                            CachingService.cacheCBTestPlans("GLOBAL",$rootScope.domain.domain);
+//                            CachingService.cacheCFTestPlans("GLOBAL",$rootScope.domain.domain);
+//                            if (userInfoService.isAuthenticated() === true) { 
+//                            	CachingService.cacheCBTestPlans("USER",$rootScope.domain.domain);
+//                                CachingService.cacheCFTestPlans("USER",$rootScope.domain.domain);
+//                            }
                                  
                             
                             $timeout(function () {

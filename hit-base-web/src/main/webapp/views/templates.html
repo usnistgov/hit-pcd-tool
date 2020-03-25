@@ -227,8 +227,8 @@
 
 
 <script type="text/ng-template" id="cb_testcase_node_render.html">
-    <div ui-tree-handle class="tree-node tree-node-content">
-        <i ng-if="node.children && node.children.length > 0" data-nodrag ng-click="toggle(this)"><span
+    <div class="tree-node tree-node-content">
+        <i ng-if="node.children && node.children.length > 0" data-nodrop-enabled ng-click="toggle(this)"><span
                 class="fa"
                 ng-class="{
           'fa-caret-right': collapsed,
@@ -236,40 +236,36 @@
         }"></span></i>
         <i data-nodrag ng-class="get_icon_type(node)"></i>
 
-        <!--<span ng-if="node.edit">-->
+	 <span data-nodrag title="Transport supported" class="label label-danger label-icon"
+                                    ng-show="node.type === 'TestPlan' && node.transport === true">T</span>
+        <span ng-if="node.edit">
 
-        <!--<input id="nodeName" required name="name" data-nodrag ng-model="node.editName" style="width:50%">-->
-        <!--<a title="Reset" class="btn btn-warning btn-xs" data-nodrag-->
-        <!--ng-click="resetNodeName(node)"><span-->
-        <!--class="fa fa-times"></span></a>-->
-        <!--<a title="Save" class="btn btn-primary btn-xs" data-nodrag-->
-        <!--ng-click="saveNodeName(node)"><span-->
-        <!--class="fa fa-check"></span></a>-->
-        <!--</span>-->
+        <input id="nodeName" required name="name" data-nodrag ng-model="node.editName" style="width:50%">
+        <a title="Reset" class="btn btn-warning btn-xs" data-nodrag
+        ng-click="resetNodeName(node)" ng-disabled="node.disableEdit" ><span
+        class="fa fa-times"></span></a>
+        <a title="Save" class="btn btn-primary btn-xs" data-nodrag
+        ng-click="saveNodeName(node)" ng-disabled="node.disableEdit"><span
+        class="fa fa-check"></span></a>
+        </span>
 
         <span>
-                              <span data-nodrag title="Transport supported" class="label label-danger label-icon"
-                                    ng-show="node.type === 'TestPlan' && node.transport === true">T</span>
-    <a data-nodrag ng-click="selectTestNode(node)" class="point">{{node.label}}</a>
-            <!--<a class="point btn btn-default btn-xs" data-nodrag ng-click="editNodeName(node)"><span-->
-            <!--class="fa fa-pencil"></span></a>-->
+                             
+
+    <a  ng-if="!node.edit" data-nodrag ng-click="selectTestNode(node)" class="point">{{node.label}}</a>
+              <a ng-show="!node.edit" class="point btn btn-default btn-xs" data-nodrop-enabled ng-click="editNodeName(node);"><span
+            class="fa fa-pencil"></span></a>
 
 
-            <!--<a class="point pull-right btn btn-danger btn-xs" data-nodrag ng-click="deleteTestNode(node)"><span-->
-            <!--class="fa fa-trash"></span></a>-->
+          <!--  <a class="point pull-right btn btn-danger btn-xs" data-nodrag ng-click="deleteTestNode(node)"><span
+            class="fa fa-trash"></span></a> -->
 
                             </span>
-        <!---->
+       
 
-
-        <!--&lt;!&ndash;<span ng-show="row.branch.transport === true" class="badge">T</span>&ndash;&gt;-->
-        <!--<span data-nodrag title="Transport supported" class="label label-danger label-icon"-->
-        <!--ng-show="node.type === 'TestPlan' && node.transport === true">T</span>-->
-        <!--<a data-nodrag ng-click="selectTestNode(node)" class="point">{{node.label}}</a>-->
-        <!--<a class="point pull-right btn btn-danger btn-xs" data-nodrag ng-click="deleteTreeNode(node)"><span-->
-        <!--class="fa fa-trash"></span></a>-->
+     
     </div>
-    <ol ui-tree-nodes="" ng-model="node.children" ng-class="{hidden: collapsed}">
+    <ol ui-tree-nodes="" data-nodrop-enabled ng-model="node.children" ng-class="{hidden: collapsed}">
         <li ng-repeat="node in node.children" ui-tree-node ng-include="'cb_testcase_node_render.html'">
         </li>
     </ol>
@@ -277,7 +273,7 @@
 
 
 <script type="text/ng-template" id="cf_testcase_node_render.html">
-    <div ui-tree-handle class="tree-node tree-node-content">
+    <div class="tree-node tree-node-content">
         <i ng-if="node.children && node.children.length > 0" data-nodrag ng-click="toggle(this)"><span
                 class="fa"
                 ng-class="{
@@ -309,7 +305,7 @@
 
 
     </div>
-    <ol ui-tree-nodes ng-model="node.children" ng-class="{hidden: collapsed}">
+    <ol ui-tree-nodes data-nodrop-enabled ng-model="node.children" ng-class="{hidden: collapsed}">
         <li ng-repeat="node in node.children" ui-tree-node ng-include="'cf_testcase_node_render.html'">
         </li>
     </ol>

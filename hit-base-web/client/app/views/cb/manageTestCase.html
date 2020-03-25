@@ -126,15 +126,16 @@
 
                 <div ng-show="errorTP == null">
                   <div ng-show="testCases != null && testCases.length > 0">
-                    <!--<testcase-tree tree-control="tree" icon-leaf=""-->
-                    <!--is-selectable="isSelectable(branch)"-->
-                    <!--on-select="selectTestCase(branch)"></testcase-tree>-->
-                    <div ui-tree id="tree-root">
+                    <!-- <testcase-tree tree-control="tree" icon-leaf=""
+                    is-selectable="isSelectable(branch)"
+                    on-select="selectTestCase(branch)"></testcase-tree> -->
+                    
+                     <div ui-tree id="management-tree-root">
                       <ol ui-tree-nodes ng-model="testCases">
                         <li ng-repeat="node in testCases" ui-tree-node
                             ng-include="'cb_testcase_node_render.html'"></li>
                       </ol>
-                    </div>
+                    </div> 
                   </div>
                 </div>
                 <div ng-show="testCases == null || testCases.length == 0">

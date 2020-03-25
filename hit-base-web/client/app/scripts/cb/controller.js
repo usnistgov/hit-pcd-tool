@@ -1954,7 +1954,7 @@ angular.module('cb')
       }
     };
 
-
+    //management 
     $scope.selectTP = function () {
       $scope.loadingTP = true;
       $scope.errorTP = null;
@@ -2017,9 +2017,10 @@ angular.module('cb')
       }
     };
 
+    //management refresh
     $scope.refreshTree = function () {
       $timeout(function () {
-        if ($scope.testCases != null) {
+        if ($scope.testCases != null) {        
           if (typeof $scope.tree.build_all == 'function') {
             $scope.tree.build_all($scope.testCases);
             var b = $scope.tree.get_first_branch();
@@ -2275,6 +2276,7 @@ angular.module('cb')
     $scope.editNodeName = function (node) {
       node.editName = node.name;
       node.edit = true
+      node.disableEdit = false;
     };
 
     $scope.resetNodeName = function (node) {
@@ -2299,6 +2301,7 @@ angular.module('cb')
 
 
     $scope.saveNodeName = function (node) {
+      node.disableEdit = true;
       if (node.editName != node.name) {
         if (node.type === 'TestPlan') {
           CBTestPlanManager.updateTestPlanName(node).then(function () {
@@ -2337,6 +2340,9 @@ angular.module('cb')
             $scope.error = "Could not saved the name, please try again"
           });
         }
+      }else{
+    	  node.edit = false;
+          node.editName = null;
       }
     };
 
@@ -2471,13 +2477,42 @@ angular.module('cb')
 
 
     $scope.expandAll = function () {
-      if ($scope.tree != null)
-        $scope.tree.expand_all();
+//    	console.log(document.getElementById("management-tree-root"));
+//    	tree = angular.element(document.getElementById("management-tree-root")).scope();
+//    	console.log(tree);
+    	 $scope.$broadcast('angular-ui-tree:expand-all');
+    	$scope.testCases.forEach(function(node){
+    		$scope.collapse(node,false);
+    	});
+//      if ($scope.tree != null)
+//    	  console.log($scope.tree);
+//        $scope.tree.expand_all();
+    	
+    	
     };
 
     $scope.collapseAll = function () {
-      if ($scope.tree != null)
-        $scope.tree.collapse_all();
+    	$scope.$broadcast('angular-ui-tree:collapse-all');
+    	$scope.testCases.forEach(function(node){
+    		$scope.collapse(node,true);
+    	});
+//      if ($scope.tree != null)
+//        $scope.tree.collapse_all();
+    };
+    
+    $scope.collapse = function(node,mode){
+//    	console.log("collapsing node "+ node.name);
+//    	console.log(node);
+    	node.collapsed;	    	
+    	if (node.children !== undefined){
+    		if (node.children.length>0){
+	    		node.children.forEach(function(child){    			
+	    			$scope.collapse(child);
+//	    			console.log(child);
+	        	});
+    		}    		
+    	}
+    	
     };
 
     $rootScope.$on('event:logoutConfirmed', function () {
