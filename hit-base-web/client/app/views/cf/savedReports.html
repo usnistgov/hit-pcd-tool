@@ -19,18 +19,18 @@ body {
 				<div class="col-md-3">
 					<div class="list-group">
 					
-					<table st-table="tmpReports" st-safe-src="cf.savedReports" class="table table-bordered table-striped " >
+					<table st-table="tmpReports" st-safe-src="cf.savedReports" class="table table-bordered" >
 						<thead class="text-primary">				        
-				        <tr>	
+				        <tr style="background-color: #3276B2;color: white;">	
 				        	<th st-sort="creationDate"  st-sort-default="reverse" st-skip-natural="true">Creation Date</th>
 				            <th st-sort="result" st-skip-natural="true" style="max-width: 150px">Validation result</th>	
 				            <th>Actions</th>				            
 				        </tr>
 		        
 		        </thead>									
-					<tr  ng-repeat="child in tmpReports"  class="point" ng-click="selectReport(child);">		         					                    
-		                    <td >{{child.creationDate | date:'MM/dd/yyyy HH:mm:ss'}}</td>                   
-		                    <td>
+					<tr class="reportrow" ng-repeat="child in tmpReports" class="point">		         					                    
+		                    <td ng-click="selectReport(child);">{{child.creationDate | date:'MM/dd/yyyy HH:mm:ss'}}</td>                   
+		                    <td ng-click="selectReport(child);">
 		                    	<span ng-if="child.result==='PASSED'|| child.result==='PASSED_NOTABLE_EXCEPTION'"><span class="label label-success"><i class="fa fa-check"></i></span>{{child.result}}</span>
 		                    	<span ng-if="child.result==='FAILED'|| child.result==='FAILED_NOT_SUPPORTED'"><span class="label label-danger"><i class="fa fa-times"></i></span>{{child.result}}</span>
 		                    	<span ng-if="child.result==='INCOMPLETE'|| child.result==='INCONCLUSIVE' || child.result==='INPROGRESS'">{{child.result}}</span>

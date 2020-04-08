@@ -35,7 +35,7 @@
 			    </div>
 			</div>
 
-			<table st-table="tmpReports" st-safe-src="reports" st-set-filter="logCustomFilter" class="table table-bordered table-striped">
+			<table st-table="tmpReports" st-safe-src="reports" st-set-filter="logCustomFilter" class="table table-bordered">
 				
 				
 		        <thead class="text-primary">
@@ -52,7 +52,7 @@
 			      </th>
 			      
 			    </tr>
-		        <tr>	
+		        <tr style="background-color: #3276B2;color: white">	
 		        	<!-- <th colspan="1" st-sort="name" st-skip-natural="true" ><span class="point">Test Plan/</span></th>	  -->       	
 		            <th st-ratio="40" colspan="1" st-sort="name" st-skip-natural="true"><span class="point">Name</span></th>
 		            <th st-ratio="30" st-sort="result" st-skip-natural="true" style="max-width: 150px"><span class="point">Validation result</span></th>
@@ -63,21 +63,21 @@
 		        </thead>
 		                
 		        <tbody>
-			        <tr ng-repeat-start="parent in tmpReports">     
+			        <tr class="reportrow" ng-repeat-start="parent in tmpReports">     
 			        			<!-- <td></td> -->               
-			                    <td colspan="1"><span class="point" ng-click="parent.expanded = !parent.expanded"><i ng-if="parent.type==='TESTCASE'" ng-class="{'fa fa-minus': parent.expanded, 'fa fa-plus': !parent.expanded}"></i> {{parent.name}}</span></td>
+			                    <td colspan="1" ng-click="parent.expanded = !parent.expanded"><span class="point"><i ng-if="parent.type==='TESTCASE'" ng-class="{'fa fa-minus': parent.expanded, 'fa fa-plus': !parent.expanded}"></i> {{parent.name}}</span></td>
 			                    <td>
 			                    	<span ng-if="parent.result==='PASSED'|| parent.result==='PASSED_NOTABLE_EXCEPTION'"><span class="label label-success"><i class="fa fa-check"></i></span>{{parent.result}}</span>
 			                    	<span ng-if="parent.result==='FAILED'|| parent.result==='FAILED_NOT_SUPPORTED'"><span class="label label-danger"><i class="fa fa-times"></i></span>{{parent.result}}</span>
 			                    	<span ng-if="parent.result==='INCOMPLETE'|| parent.result==='INCONCLUSIVE' || parent.result==='INPROGRESS'">{{parent.result}}</span>
 			                    </td>
-			                    <td>{{parent.creationDate | date:'MM/dd/yyyy HH:mm:ss'}}</td>
-			                    <td>
+			                    <td ng-click="parent.expanded = !parent.expanded">{{parent.creationDate | date:'MM/dd/yyyy HH:mm:ss'}}</td>
+			                    <td ng-click="parent.expanded = !parent.expanded">
 							        <button class="btn btn-xs btn-default" title="Open repoort" ng-click="openReportDetails(parent)"><i class="fa fa-external-link"></i></button>
 							        <button class="btn btn-xs btn-danger" title="Delete repoort" ng-click="deleteReport(parent)"><i class="fa fa-trash"></i></button>
 							     </td>
 			        </tr>
-		         	<tr ng-show="parent.expanded" ng-repeat-end="" ng-repeat="child in parent.reports">
+		         	<tr class="reportrow" ng-show="parent.expanded" ng-repeat-end="" ng-repeat="child in parent.reports">
 		         			<!-- <td></td> -->
 		                    <td colspan="1" style="padding-left: 40px">{{child.name}}</td>
 		                    <td>

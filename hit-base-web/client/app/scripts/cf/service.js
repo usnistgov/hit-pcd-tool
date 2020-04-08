@@ -29,7 +29,7 @@ angular.module('cf').factory('CFTestPlanExecutioner', ['$q', '$http', '$rootScop
 
 
 
-				$http.get("api/cf/testplans/" + id, { timeout: 180000}).then(
+				$http.get("api/cf/testplans/" + id +"/updateDate", { timeout: 180000}).then(
 						function (date) {	
 							$localForage.getItem("api/cf/testplans/" + id,true).then(function(data) {
 								//cache found
@@ -48,7 +48,7 @@ angular.module('cf').factory('CFTestPlanExecutioner', ['$q', '$http', '$rootScop
 								);
 							}
 							 },function(error){
-						        	//no cache found
+                      //no cache found
 						        	$http.get("api/cf/testplans/" + id, { timeout: 180000}).then(
 						        			function (object) {	
 						        				$localForage.setItem("api/cf/testplans/" + id,angular.fromJson(object.data)).then(function() {});

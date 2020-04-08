@@ -10,8 +10,7 @@ angular.module('cb')
    
     
     $scope.initTesting = function () {
-    	 if ($routeParams.scope !== undefined && $routeParams.group !== undefined){
-    	       
+    	 if ($routeParams.scope !== undefined && $routeParams.group !== undefined){    	       
     	        	StorageService.set(StorageService.CB_SELECTED_TESTPLAN_ID_KEY, $routeParams.group);
     	            StorageService.set(StorageService.CB_SELECTED_TESTPLAN_SCOPE_KEY, $routeParams.scope);    	                	                	           
     	            $scope.setSubActive("/cb_testcase",$routeParams.scope,$routeParams.group);    	            
@@ -38,6 +37,7 @@ angular.module('cb')
       $timeout(function () {
       if (tab === '/cb_execution') {
         $scope.$broadcast('cb:refreshEditor');
+        $rootScope.$broadcast('event:refreshLoadedTestCase');
       } else if (tab === '/cb_testcase') {
         if (scope !== undefined && group !== undefined){
         		$scope.$broadcast('event:cb:initTestCase',{ scope: scope, group: group}); 
@@ -1226,6 +1226,26 @@ angular.module('cb')
     };
 
 
+    $scope.refreshLoadedTestCase = function () {
+      var testCase = null;
+      var id = StorageService.get(StorageService.CB_LOADED_TESTCASE_ID_KEY);
+      var type = StorageService.get(StorageService.CB_LOADED_TESTCASE_TYPE_KEY);
+      if (id != null && type != null) {
+        for (var i = 0; i < $scope.testCases.length; i++) {
+          var found = testCaseService.findOneByIdAndType(id, type, $scope.testCases[i]);
+          if (found != null) {
+            testCase = found;
+            break;
+          }
+        }
+        if (testCase != null) {
+          var tab = StorageService.get(StorageService.ACTIVE_SUB_TAB_KEY);
+          $scope.loadTestCase(testCase, tab, false);
+        }
+      }
+    };
+
+
     $scope.isSelectable = function (node) {
       return true;
     };
@@ -1310,6 +1330,9 @@ angular.module('cb')
       $scope.initTestCase();
     });
 
+    $rootScope.$on('event:refreshLoadedTestCase', function () {
+      $scope.refreshLoadedTestCase();
+    });
     
     $rootScope.$on('cb:updateSavedReports', function (event, testStep) {
     	if (userInfoService.isAuthenticated() && $rootScope.isReportSavingSupported()){
@@ -1907,9 +1930,6 @@ angular.module('cb')
 
     var testCaseService = new TestCaseService();
 
-    
-   
-    
 
     $scope.$on('event:cb:initManagement', function () {
       $scope.initTestCase();
@@ -1919,13 +1939,14 @@ angular.module('cb')
 
 
     $scope.initTestCase = function () {
+      console.log("coocu");
       if ($rootScope.isCbManagementSupported() && userInfoService.isAuthenticated() && $rootScope.hasWriteAccess()) {
         $scope.error = null;
         $scope.loading = true;
         $scope.testPlans = null;
         if (userInfoService.isAdmin() || userInfoService.isSupervisor()) {
           $scope.testPlanScopes = $scope.allTestPlanScopes;
-          var tmp = StorageService.get(StorageService.CB_SELECTED_TESTPLAN_SCOPE_KEY);
+          var tmp = StorageService.get(StorageService.CB_MANAGE_SELECTED_TESTPLAN_SCOPE_KEY);
           $scope.selectedScope.key = tmp && tmp != null ? tmp : $scope.testPlanScopes[1].key;
         } else {
           $scope.testPlanScopes = [$scope.allTestPlanScopes[0]];

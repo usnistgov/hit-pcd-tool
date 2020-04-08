@@ -318,6 +318,7 @@
     	$scope.savedReports = [];
         $scope.eId = $scope.target + "-savedReports";
         $scope.$on($scope.eId, function (event, savedReports, title) {
+            $scope.selectedSavedReport = null;
             $scope.savedReports = savedReports;
         });
 
@@ -475,7 +476,8 @@
                 $scope.testCase = testCase;
                 $scope.loading = true;
                 $scope.error = null;
-                $scope.editor = null;
+                $scope.editor = null;               
+                
 
                 var testContext = testCase['testContext'];
                 if (testContext && testContext != null) {

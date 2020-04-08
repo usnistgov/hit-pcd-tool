@@ -308,7 +308,7 @@
 				<div class="col-md-3">
 					<div class="list-group">
 						
-					<table st-table="tmpReports" st-safe-src="savedReports" class="table table-bordered table-striped " >
+					<table st-table="tmpReports" st-safe-src="savedReports" class="table table-bordered " >
 						<thead class="text-primary">				        
 				        <tr>	
 				        	<th st-sort="creationDate"  st-sort-default="reverse" st-skip-natural="true">Creation Date</th>
@@ -317,7 +317,7 @@
 				        </tr>
 		        
 		       	 </thead>									
-					<tr  ng-repeat="child in tmpReports"  >		         					                    
+					<tr class="reportrow" ng-repeat="child in tmpReports"  >		         					                    
 		                    <td  class="point" ng-click="selectReport(child);">{{child.creationDate | date:'MM/dd/yyyy HH:mm:ss'}}</td>                   
 		                    <td  class="point" ng-click="selectReport(child);">
 		                    	<span ng-if="child.result==='PASSED'|| child.result==='PASSED_NOTABLE_EXCEPTION'"><span class="label label-success"><i class="fa fa-check"></i></span>{{child.result}}</span>

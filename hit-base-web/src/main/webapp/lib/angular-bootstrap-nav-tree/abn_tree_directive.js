@@ -263,6 +263,7 @@
                                     return b.expanded = true;
                                 });
                             };
+
                             tree.build_all = function (treeData) {
                                 scope.treeData = treeData;
                                 on_treeData_change();
