@@ -1,26 +1,28 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<artifactId>gvt-ui-web</artifactId>
-	<name>gvt-ui-web</name>
-	<description>gvt-ui web</description>
+	<artifactId>hit-base-web</artifactId>
+	<name>hit-base-web</name>
+	<description>hit-base tool</description>
 	<packaging>war</packaging>
 	<parent>
-		<groupId>gov.nist.hit.gvt</groupId>
-		<artifactId>gvt-ui-tool</artifactId>
+		<groupId>gov.nist.hit.base</groupId>
+		<artifactId>hit-base-tool</artifactId>
 		<version>1.0.0-SNAPSHOT</version>
 	</parent>
 
 	<dependencies>
 		<dependency>
-			<groupId>gov.nist.hit.gvt</groupId>
-			<artifactId>gvt-config</artifactId>
-			<version>${config.version}</version>
+		    <groupId>junit</groupId>
+		    <artifactId>junit</artifactId>
+		    <version>4.13</version>
+		    <scope>test</scope>
 		</dependency>		
+		
 	</dependencies>
 
 	<build>
-		<finalName>gvt</finalName>
+		<finalName>hit-base-tool</finalName>
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -41,6 +43,7 @@
 						</execution>
 					</executions>
 				</plugin>
+
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-eclipse-plugin</artifactId>
@@ -72,22 +75,15 @@
 						<packagingExcludes>WEB-INF/web.xml</packagingExcludes>
 					</configuration>
 				</plugin>
-				<plugin>
-		          <groupId>org.apache.maven.plugins</groupId>
-		          <artifactId>maven-surefire-plugin</artifactId>
-		          <version>2.18.1</version>
-		        </plugin>
 			</plugins>
 		</pluginManagement>
-	</build>
 
+	</build>
+	
 	<repositories>
 		<repository>
 			<id>spring-milestones</id>
 			<url>http://repo.springsource.org/libs-milestone/</url>
 		</repository>
 	</repositories>
-	<properties>
-		<config.version>1.0.0-SNAPSHOT</config.version>
-	</properties>
 </project>
