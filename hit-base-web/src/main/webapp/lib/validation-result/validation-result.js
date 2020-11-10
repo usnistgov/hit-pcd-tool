@@ -38,10 +38,10 @@
   ]);
 
   mod
-    .controller('ValidationResultCtrl', ['$scope', '$filter', '$modal', '$rootScope', 'ValidationResultHighlighter', '$sce', 'NewValidationResult', '$timeout', 'ServiceDelegator', 'Settings', 'TestExecutionService', 'StorageService', function ($scope, $filter, $modal, $rootScope, ValidationResultHighlighter, $sce, NewValidationResult, $timeout, ServiceDelegator, Settings, TestExecutionService,StorageService) {
+  .controller('ValidationResultCtrl', ['$scope', '$filter', '$modal', '$rootScope', 'ValidationResultHighlighter', '$sce', 'NewValidationResult', '$timeout', 'ServiceDelegator', 'SettingsService', 'TestExecutionService', 'StorageService', function ($scope, $filter, $modal, $rootScope, ValidationResultHighlighter, $sce, NewValidationResult, $timeout, ServiceDelegator, SettingsService, TestExecutionService,StorageService) {
     	$scope.validationTabs = new Array();
       $scope.currentType = null;
-      $scope.settings = Settings;
+      $scope.settings = SettingsService;
       $scope.validationResultOriginal = null;
       $scope.activeTab = 0;
       $scope.validationResult = null;
@@ -52,7 +52,9 @@
         alerts: false,
         warnings: false,
         informationals: false,
-        affirmatives: false
+        affirmatives: false,
+        specerrors: false
+
       };
 
       $scope.subActive = {
@@ -60,7 +62,8 @@
         alerts: {},
         warnings: {},
         informationals: {},
-        affirmatives: {}
+        affirmatives: {},
+        specerrors: {}
       };
 
       $scope.checkboxConfig = {};
@@ -90,7 +93,12 @@
           className: "failure failure-affirmatives",
           checked: false,
           active: false
-        }
+        },
+        specerrors: {
+            className: "failure failure-specerrors",
+            checked: false,
+            active: false
+          }
       };
 
       $scope.currentCategory = null;
@@ -208,6 +216,8 @@
           $scope.checkboxConfig['warnings'] = {};
           $scope.checkboxConfig['affirmatives'] = {};
           $scope.checkboxConfig['informationals'] = {};
+          $scope.checkboxConfig['specerrors'] = {};
+
 
           // if($scope.validationResult.errors && $scope.validationResult.errors.categories) {
           //     angular.forEach($scope.validationResult.errors.categories, function (category) {
@@ -240,6 +250,8 @@
           $scope.failuresConfig.alerts.checked = false;
           $scope.failuresConfig.informationals.checked = false;
           $scope.failuresConfig.affirmatives.checked = false;
+          $scope.failuresConfig.specerrors.checked = false;
+
           $scope.firstLoaded = false;
           //$scope.hideAllFailures();
           $scope.active = {};
@@ -333,6 +345,8 @@
       this.hideFailures(this.histMarksMap['affirmatives']);
       this.hideFailures(this.histMarksMap['informationals']);
       this.hideFailures(this.histMarksMap['alerts']);
+      this.hideFailures(this.histMarksMap['specerrors']);
+
     };
 
     ValidationResultHighlighter.prototype.showFailures = function (type, category) {
@@ -531,6 +545,8 @@
           this.addResult(this.affirmatives, entry);
         } else if (entry['classification'] === 'Informational' || entry['classification'] === 'Info') {
           this.addResult(this.informationals, entry);
+        } else if (entry['classification'] === 'Spec Error') {
+            this.addResult(this.specerrors, entry);
         }
       } catch (error) {
         console.log(error);
@@ -572,6 +588,7 @@
       this.removeCategoryDuplicates(this.alerts);
       this.removeCategoryDuplicates(this.affirmatives);
       this.removeCategoryDuplicates(this.informationals);
+      this.removeCategoryDuplicates(this.specerrors);
       this.duplicatesRemoved = true;
     };
 
@@ -584,6 +601,7 @@
           this.loadDetection(this.json.detections['Warning']);
           this.loadDetection(this.json.detections['Informational']);
           this.loadDetection(this.json.detections['Affirmative']);
+          this.loadDetection(this.json.detections['Spec Error']);
         }
       }else{
         this.json = null;

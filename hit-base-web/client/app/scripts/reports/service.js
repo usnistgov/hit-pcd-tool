@@ -174,13 +174,16 @@ angular.module('reports').factory('ReportService',['$rootScope', '$http', '$q', 
 	    		      },
 	    		      
 	    		      
-	    		      saveTestCaseValidationReport: function   (testCaseId,testStepReportIds, result, comments) {
+	    		      saveTestCaseValidationReport: function   (testCaseId,testStepReportIds, result, comments, testPlanName, testGroupName) {
 	    		          var delay = $q.defer();
 	    		          var data = angular.fromJson({	    		        	
 	  	    		        "testCaseId": testCaseId,
 	  	    		        "testStepReportIds":testStepReportIds,
 	  	    		        "result": result,
-	  	    		        "comments": comments
+							"comments": comments,
+							"testPlan": testPlanName,
+							"testGroup": testGroupName
+
 	  	    		      });
 	    		          $http.post("api/userTCReport/savePersistentUserTestCaseReport", data).then(
 	    		            function (object) {

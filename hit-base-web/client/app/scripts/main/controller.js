@@ -6,9 +6,11 @@ angular.module('main').controller('MainCtrl',
         //If success, the app is updated according to the role.
         $rootScope.loginDialog = null;
         $rootScope.started = false;
+        $scope.showNotificationPanel = false;
 
         var domainParam = $location.search()['d'] ? decodeURIComponent($location.search()['d']) : null;
 
+        
 
         $scope.language = function () {
             return i18n.language;
@@ -206,17 +208,74 @@ angular.module('main').controller('MainCtrl',
             }
         });
 
-        $scope.$on('Keepalive', function () {
-            if ($scope.isAuthenticated()) {
-                IdleService.keepAlive();
-            }
+        
+        $scope.addToHiddenList = function (id) {
+            var hiddenIds;
+            $localForage.getItem('hiddenNotifications', true).then(function (hiddenIdsResults) {
+                hiddenIds = hiddenIdsResults;
+                if (hiddenIds.indexOf(id) === -1) {
+                    hiddenIds.push(id);
+                }
+
+            }, function (error) {
+                //no cache found
+                hiddenIds = [];
+                hiddenIds[0] = id;
+            }).finally(function () {
+                $localForage.setItem("hiddenNotifications", hiddenIds).then(function (err) {
+                    $scope.updateNotifications($scope.rawNotifications);
+                });
+            });
+
+
+        };
+
+        $scope.updateNotifications = function (result) {
+            //filtering hidden ones
+            var filteredData = angular.copy(result);
+            $localForage.getItem('hiddenNotifications', true).then(function (hiddenIds) {
+                if (hiddenIds !== null) {
+                    filteredData = filteredData.filter(function (noti) {
+                        return (noti.dismissable === false ||  hiddenIds.indexOf(noti.id) === -1); // keep non dismissable and those not on the list of hidden 
+                    });
+                }
+            }, function (error) {
+                //no cache found
+            }).finally(function () {
+
+                if (angular.equals(filteredData, $scope.notifications)) {
+                    //equal, do nothing 
+                } else {
+                    //different, update!
+                    $scope.notifications = angular.copy(filteredData);
+
+                }
+                if ($scope.notifications.length >0){
+                	$scope.showNotificationPanel = true;
+                }else{
+                	$scope.showNotificationPanel = false;
+                }
+            });
+        };
+        
+        scope.$on('Keepalive', function () {
+            IdleService.keepAlive().then(function (result) {
+                $scope.rawNotifications = angular.copy(result);
+                $scope.updateNotifications(result);
+            });
+
+
         });
 
-        $rootScope.$on('Keepalive', function () {
-            IdleService.keepAlive();
+//        $rootScope.$on('Keepalive', function () {
+//            IdleService.keepAlive();
+//        });
+
+        IdleService.keepAlive().then(function (result) {
+            $scope.rawNotifications = angular.copy(result);
+            $scope.updateNotifications(result);
         });
-
-
+        
         $rootScope.$on('event:execLogout', function () {
             $scope.execLogout();
         });
@@ -685,8 +744,8 @@ angular.module('main').controller('MainCtrl',
 
         $rootScope.showSettings = function () {
             var modalInstance = $modal.open({
-                templateUrl: 'SettingsCtrl.html',
-                size: 'lg',
+                templateUrl: 'views/settings/SettingsCtrl.html',
+                windowClass: 'upload-modal',
                 keyboard: 'false',
                 controller: 'SettingsCtrl'
             });
@@ -889,6 +948,9 @@ angular.module('main').controller('MainCtrl',
 
 
 
+        
+        
+        
     });
 
 

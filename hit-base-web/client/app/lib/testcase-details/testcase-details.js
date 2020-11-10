@@ -401,6 +401,7 @@
 
     	$scope.selectReport = function (report) {
     		if (report && report.userTestStepReports){
+                $scope.loading = true;
     			ReportService.getUserTCReport(report.id).then(function (report) {
                 	if (report !== null){
                 		$scope.selectedSavedReport = report;
@@ -414,9 +415,13 @@
                         templateUrl: "NotificationErrorTemplate.html",
                         scope: $rootScope,
                         delay: 10000
-                      });                         
+                      });                 
+                }).finally(function () {
+                    $scope.loading = false;
+
                 });
     		}else if (report && report.userTestStepReports === undefined){
+                $scope.loading = true;
     			ReportService.getUserTSReport(report.id).then(function (report) {
                 	if (report !== null){
                 		$scope.selectedSavedReport = report;
@@ -430,7 +435,9 @@
                         templateUrl: "NotificationErrorTemplate.html",
                         scope: $rootScope,
                         delay: 10000
-                      });                         
+                      });           
+                }).finally(function () {
+                    $scope.loading = false;
                 });
     		}
     		

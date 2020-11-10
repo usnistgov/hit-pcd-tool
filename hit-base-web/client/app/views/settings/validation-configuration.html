@@ -1,0 +1,590 @@
+<style id="antiClickjack">
+body {
+	display: none !important;
+}
+</style>
+<script type="text/javascript">
+	if (self === top) {
+		var antiClickjack = document.getElementById("antiClickjack");
+		antiClickjack.parentNode.removeChild(antiClickjack);
+	} else {
+		top.location = self.location;
+	}
+</script>
+<div>
+	<span style="font-weight: bold; font-size: 18px">Customize
+		validation detections</span>
+</div>
+<div>
+</div>
+<hr />
+<table class="table table-striped table-condensed table-bordered">
+	<thead class="tbl-header">
+		<th style="text-align:center;vertical-align: middle;">Detection</th>
+		<th style="text-align:center;vertical-align: middle;">Description</th>
+		<th style="text-align:center;vertical-align: middle;">Classification<br><button ng-if="isAdmin() || isDomainOwner()" ng-click="resetClassifications()" type="button" title="reset classifications"
+			class="btn btn-sm btn-warning">
+			<i class="fa fa-refresh" aria-hidden="true"></i> Reset to default classifications
+		</button></th>
+	</thead>
+	<tbody>
+
+		<tr style="text-align: center;">
+			<td colspan="3"><span style="font-weight: bold;">Structure based detections</span></td>
+		</tr>
+
+		<tr>
+			<td>r-usage</td>
+			<td>Raised when an element with R usage is not populated</td>
+			<td><select
+				ng-disabled="!isAdmin()"
+				class="validation-clasification-select form-control input-sm "
+				name="r-usage"
+				ng-model="domainClassifications.rUsage.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>x-usage</td>
+			<td>Raised when an element with X usage is populated </td>
+			<td><select
+				ng-disabled="!isAdmin()" 
+				class="validation-clasification-select form-control input-sm "
+				name="x-usage"
+				ng-model="domainClassifications.xUsage.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>w-usage</td>
+			<td>Raised when an element with W  usage is populated</td>
+			<td><select
+				ng-disabled="!isAdmin()"
+				class="validation-clasification-select form-control input-sm "
+				name="w-usage"
+				ng-model="domainClassifications.wUsage.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>re-usage</td>
+			<td>Raised when an element with RE usage is not populated</td>
+			<td><select			
+				class="validation-clasification-select form-control input-sm "
+				name="re-usage" ng-disabled="!isAdmin() && !isDomainOwner()"
+				ng-model="domainClassifications.reUsage.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>o-usage</td>
+			<td>Raised when an element with O usage is populated </td>
+			<td><select
+				class="validation-clasification-select form-control input-sm "
+				name="o-usage" ng-disabled="!isAdmin() && !isDomainOwner()" ng-model="domainClassifications.oUsage.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+			</select></td>
+		</tr>
+
+
+		<tr>
+			<td>cardinality</td>
+			<td>The cardinality detection is issued when the number of repetitions of an element is not in the specified cardinality range.  </td>
+			<td><select
+				ng-disabled="!isAdmin()"
+				class="validation-clasification-select form-control input-sm "
+				name="caridnality-usage"
+				ng-model="domainClassifications.cardinality.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+					<option value="SPEC_ERROR">Spec Error</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>null-cardinality</td>
+			<td>The null cardinality detection is issued when a null field has more than one instance.</td>
+			<td><select		
+				ng-disabled="!isAdmin()"
+				class="validation-clasification-select form-control input-sm "
+				name="o-usage"
+				ng-model="domainClassifications.nullCardinality.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>length-spec-error-no-valid</td>
+			<td>No valid length specification was found</td>
+			<td><select
+				ng-disabled="!isAdmin()"
+				class="form-control input-sm validation-clasification-select"
+				name="length-spec-error-no-valid"
+				ng-model="domainClassifications.lengthSpecErrorNoValid.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+					<option value="SPEC_ERROR">Spec Error</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>length-spec-error-xor</td>
+			<td>Length specification error. One of (MaxLength, MinLength) or ConfLength should be present, but not both</td>
+			<td><select
+				ng-disabled="!isAdmin()"
+				class="validation-clasification-select form-control input-sm "
+				name="length-spec-error-xor"
+				ng-model="domainClassifications.lengthSpecErrorXor.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+					<option value="SPEC_ERROR">Spec Error</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>length</td>
+			<td>The length detection is issued when the length of a primitive element is not in the specified length range.          </td>
+			<td><select
+				class="validation-clasification-select form-control input-sm "
+				name="length" ng-disabled="!isAdmin() && !isDomainOwner()" ng-model="domainClassifications.length.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>format</td>
+			<td>The format detection is issued when the value of a primitive element is not valid according to the format defined or derived from the data type.</td>
+			<td><select
+				class="validation-clasification-select form-control input-sm "
+				name="format" ng-disabled="!isAdmin() && !isDomainOwner()" ng-model="domainClassifications.format.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>extra</td>
+			<td>This detection is issued when a complex element has extra children </td>
+			<td><select
+				class="validation-clasification-select form-control input-sm "
+				name="extra" ng-disabled="!isAdmin() && !isDomainOwner()" ng-model="domainClassifications.extra.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+			</select></td>
+		</tr>
+
+		<tr>
+			<td>unescaped</td>
+			<td>This detection is issued when a primitive element contains unescaped separators</td>
+			<td><select
+				ng-disabled="!isAdmin()"
+				class="validation-clasification-select form-control input-sm "
+				name="unescaped"
+				ng-model="domainClassifications.unescaped.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>unexpected</td>
+			<td>This detection is issued when an unexpected segment is found at a specific position </td>
+			<td><select
+				ng-disabled="!isAdmin()"
+				class="validation-clasification-select form-control input-sm "
+				name="unexpected"
+				ng-model="domainClassifications.unexpected.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>invalid</td>
+			<td>This detection is issued when an invalid content is found in the message </td>
+			<td><select		
+				ng-disabled="!isAdmin()"
+				class="validation-clasification-select form-control input-sm "
+				name="invalid" ng-model="domainClassifications.invalid.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>unresolved-field</td>
+			<td>This detection is issued when a the reference values are not found in dynamic mapping for varies fields</td>
+			<td><select
+				ng-disabled="!isAdmin()"
+				class="validation-clasification-select form-control input-sm "
+				name="unresolved-field"
+				ng-model="domainClassifications.unresolvedField.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+			</select></td>
+		</tr>
+		<tr style="text-align: center;">
+			<td colspan="3"><span style="font-weight: bold;">Content based detections</span></td>
+		</tr>
+		<tr>
+			<td>coconstraint-failure</td>
+			<td>This detection is issued for a failed coconstraint verification</td>
+			<td><select
+				ng-disabled="!isAdmin()"
+				class="validation-clasification-select form-control input-sm "
+				name="coconstraint-failure"
+				ng-model="domainClassifications.coconstraintFailure.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>coconstraint-success</td>
+			<td>This detection is issued for a successful coconstraint verification </td>
+			<td><select
+				ng-disabled="!isAdmin()"
+				class="validation-clasification-select form-control input-sm "
+				name="coconstraint-success"
+				ng-model="domainClassifications.coconstraintSuccess.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>highlevel-content</td>
+			<td>Order Indifferent trigger not found</td>
+			<td><select
+				ng-disabled="!isAdmin()"
+				class="validation-clasification-select form-control input-sm "
+				name="highlevel-content"
+				ng-model="domainClassifications.highlevelContent.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>constraint-failure</td>
+			<td>This detection is issued for a failed constraint verification </td>
+			<td><select		
+				ng-disabled="!isAdmin()"
+				class="validation-clasification-select form-control input-sm "
+				name="constraint-failure"
+				ng-model="domainClassifications.constraintFailure.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>constraint-success</td>
+			<td>This detection is issued for a successful constraint verification </td>
+			<td><select
+				ng-disabled="!isAdmin()"
+				class="validation-clasification-select form-control input-sm "
+				name="extra"
+				ng-model="domainClassifications.constraintSuccess.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>constraint-spec-error</td>
+			<td>This detection is issued for a invalid constraint verification</td>
+			<td><select
+				ng-disabled="!isAdmin()"
+				class="validation-clasification-select form-control input-sm "
+				name="extra"
+				ng-model="domainClassifications.constraintSpecError.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+					<option value="SPEC_ERROR">Spec Error</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>content-failure</td>
+			<td>This detection is issued for a failed content verification </td>
+			<td><select
+				ng-disabled="!isAdmin()"
+				class="validation-clasification-select form-control input-sm "
+				name="extra"
+				ng-model="domainClassifications.contentFailure.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>content-success</td>
+			<td>This detection is issued for a successful content verification </td>
+			<td><select
+				ng-disabled="!isAdmin()"
+				class="validation-clasification-select form-control input-sm "
+				name="extra"
+				ng-model="domainClassifications.contentSuccess.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>content-spec-error</td>
+			<td>This detection is issued for a invalid content check verification</td>
+			<td><select
+				ng-disabled="!isAdmin()"
+				class="validation-clasification-select form-control input-sm "
+				name="extra"
+				ng-model="domainClassifications.contentSpecError.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+					<option value="SPEC_ERROR">Spec Error</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>predicate-success</td>
+			<td>This detection is issued for a successful predicate verification </td>
+			<td><select
+				ng-disabled="!isAdmin()"
+				class="validation-clasification-select form-control input-sm "
+				name="predicate-success"
+				ng-model="domainClassifications.predicateSuccess.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>predicate-failure</td>
+			<td>This detection is issued for a failed predicate verification </td>
+			<td><select
+				ng-disabled="!isAdmin()"
+				class="validation-clasification-select form-control input-sm "
+				name="predicate-failure"
+				ng-model="domainClassifications.predicateFailure.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>predicate-spec-error</td>
+			<td>This detection is issued for a invalid predicate verification</td>
+			<td><select
+				ng-disabled="!isAdmin()"
+				class="validation-clasification-select form-control input-sm "
+				name="extra"
+				ng-model="domainClassifications.predicateSpecError.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+					<option value="SPEC_ERROR">Spec Error</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>evs</td>
+			<td>This detection is raised when the code is in the value set but the usage is E (excluded)</td>
+			<td><select
+				ng-disabled="!isAdmin()"
+				class="validation-clasification-select form-control input-sm "
+				name="extra" ng-model="domainClassifications.evs.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>pvs</td>
+			<td>This detection is raised when the code is in the value set but the usage is P (permitted)</td>
+			<td><select
+				class="validation-clasification-select form-control input-sm "
+				name="extra" ng-disabled="!isAdmin() && !isDomainOwner()" ng-model="domainClassifications.pvs.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>code-not-found</td>
+			<td>This detection is raised when the code cannot be found in the value set</td>
+			<td><select
+				ng-disabled="!isAdmin()"
+				class="validation-clasification-select form-control input-sm "
+				name="extra"
+				ng-model="domainClassifications.codeNotFound.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>vs-not-found</td>
+			<td>This detection is raised when the value set cannot be found in the library</td>
+			<td><select
+				ng-disabled="!isAdmin()"
+				class="validation-clasification-select form-control input-sm "
+				name="vs-not-found"
+				ng-model="domainClassifications.vsNotFound.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+					<option value="SPEC_ERROR">Spec Error</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>empty-vs</td>
+			<td>This detection is raised when the value set is empty</td>
+			<td><select
+				class="validation-clasification-select form-control input-sm "
+				name="empty-vs" ng-disabled="!isAdmin() && !isDomainOwner()" ng-model="domainClassifications.emptyVs.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>vs-error</td>
+			<td>This detection is raised when there is an error in the value set</td>
+			<td><select
+				ng-disabled="!isAdmin()"
+				class="validation-clasification-select form-control input-sm "
+				name="vs-error" ng-model="domainClassifications.vsError.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+					<option value="SPEC_ERROR">Spec Error</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>binding-location</td>
+			<td>This detection is raised when there is an error while resolving the binding location</td>
+			<td><select
+				ng-disabled="!isAdmin()"
+				class="validation-clasification-select form-control input-sm "
+				name="binding-location"
+				ng-model="domainClassifications.bindingLocation.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+					<option value="SPEC_ERROR">Spec Error</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>vs-no-validation</td>
+			<td>This detection is raised when the value set is excluded from the validation</td>
+			<td><select
+				class="validation-clasification-select form-control input-sm " ng-disabled="!isAdmin() && !isDomainOwner()"
+				name="vs-no-validation"
+				ng-model="domainClassifications.vsNoValidation.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+			</select></td>
+		</tr>
+		<tr>
+			<td>coded-element</td>
+			<td>This detection is raised when coded element validation fails</td>
+			<td><select
+				ng-disabled="!isAdmin()"
+				class="validation-clasification-select form-control input-sm "
+				name="extra"
+				ng-model="domainClassifications.codedElement.classfication">
+					<option value="ERROR">Error</option>
+					<option value="WARNING">Warning</option>
+					<option value="ALERT">Alert</option>
+					<option value="INFORMATIONAL">Informational</option>
+					<option value="AFFIRMATIVE">Affirmative</option>
+			</select></td>
+		</tr>
+	</tbody>
+</table>

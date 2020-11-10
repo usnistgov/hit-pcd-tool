@@ -41,21 +41,21 @@
 		        <thead class="text-primary">
 		        <tr>
 		        	
-			      <th colspan="2" st-ratio="50">
-			      <button ng-attr-title="{{!expandTCs ? 'Collapse All' : 'Expand All'}}" class="btn btn-xs btn-info" ng-click="toggleExpand(); expandTCs = !expandTCs;"> <i ng-class="{'point fa fa-compress':!expandTCs,'point fa fa-expand':expandTCs}"></i>
-          </button>
-			        <input st-search="" placeholder="Search" class="input-sm form-control" type="search">
+			      <th colspan="2" st-ratio="50">			     
+					  Search: 
+			        <input st-search="" class="input-sm form-control" type="search">
 			      </th>
 			      <th colspan="3" st-ratio="50">
-			        Date Filter
+			        Date Filter:
 			        <st-log-date-range predicate="creationDate" before="logValidationDateQuery.before" after="logValidationDateQuery.after"></st-log-date-range>
 			      </th>
 			      
 			    </tr>
 		        <tr style="background-color: #3276B2;color: white">	
 		        	<!-- <th colspan="1" st-sort="name" st-skip-natural="true" ><span class="point">Test Plan/</span></th>	  -->       	
-		            <th st-ratio="40" colspan="1" st-sort="name" st-skip-natural="true"><span class="point">Name</span></th>
-		            <th st-ratio="30" st-sort="result" st-skip-natural="true" style="max-width: 150px"><span class="point">Validation result</span></th>
+		            <th st-ratio="40" colspan="1" st-sort="name" st-skip-natural="true"><span class="point">Test Path and Name</span></th>
+					<th st-ratio="15" st-sort="result" st-skip-natural="true" style="max-width: 150px"><span class="point">Validation Result</span></th>
+					<th st-ratio="15" st-sort="testingStage">Testing Context</th>
 		            <th st-ratio="19" st-sort="creationDate" st-sort-default="reverse" st-skip-natural="true"><span class="point">Test Date</span></th>
 		            <th st-ratio="1">Actions</th>
 		        </tr>
@@ -65,13 +65,14 @@
 		        <tbody>
 			        <tr class="reportrow" ng-repeat-start="parent in tmpReports">     
 			        			<!-- <td></td> -->               
-			                    <td colspan="1" ng-click="parent.expanded = !parent.expanded"><span class="point"><i ng-if="parent.type==='TESTCASE'" ng-class="{'fa fa-minus': parent.expanded, 'fa fa-plus': !parent.expanded}"></i> {{parent.name}}</span></td>
+			                    <td colspan="1" ng-click="parent.expanded = !parent.expanded"><span class="point"><i ng-if="parent.type==='TESTCASE'" ng-class="{'fa fa-minus': parent.expanded, 'fa fa-plus': !parent.expanded}"></i> {{parent.path}}</span></td>
 			                    <td>
 			                    	<span ng-if="parent.result==='PASSED'|| parent.result==='PASSED_NOTABLE_EXCEPTION'"><span class="label label-success"><i class="fa fa-check"></i></span>{{parent.result}}</span>
 			                    	<span ng-if="parent.result==='FAILED'|| parent.result==='FAILED_NOT_SUPPORTED'"><span class="label label-danger"><i class="fa fa-times"></i></span>{{parent.result}}</span>
 			                    	<span ng-if="parent.result==='INCOMPLETE'|| parent.result==='INCONCLUSIVE' || parent.result==='INPROGRESS'">{{parent.result}}</span>
-			                    </td>
-			                    <td ng-click="parent.expanded = !parent.expanded">{{parent.creationDate | date:'MM/dd/yyyy HH:mm:ss'}}</td>
+								</td>
+								<td ng-click="parent.expanded = !parent.expanded">{{::parent.stage === 'CF' ? "Context-free": "Context-based"}}</td>
+			                    <td ng-click="parent.expanded = !parent.expanded">{{::parent.creationDate | date:'MM/dd/yyyy HH:mm:ss'}}</td>
 			                    <td ng-click="parent.expanded = !parent.expanded">
 							        <button class="btn btn-xs btn-default" title="Open repoort" ng-click="openReportDetails(parent)"><i class="fa fa-external-link"></i></button>
 							        <button class="btn btn-xs btn-danger" title="Delete repoort" ng-click="deleteReport(parent)"><i class="fa fa-trash"></i></button>
@@ -79,13 +80,14 @@
 			        </tr>
 		         	<tr class="reportrow" ng-show="parent.expanded" ng-repeat-end="" ng-repeat="child in parent.reports">
 		         			<!-- <td></td> -->
-		                    <td colspan="1" style="padding-left: 40px">{{child.name}}</td>
+		                    <td colspan="1" style="padding-left: 40px">{{::child.name}}</td>
 		                    <td>
 		                    	<span ng-if="child.result==='PASSED'|| child.result==='PASSED_NOTABLE_EXCEPTION'"><span class="label label-success"><i class="fa fa-check"></i></span>{{child.result}}</span>
 		                    	<span ng-if="child.result==='FAILED'|| child.result==='FAILED_NOT_SUPPORTED'"><span class="label label-danger"><i class="fa fa-times"></i></span>{{child.result}}</span>
 		                    	<span ng-if="child.result==='INCOMPLETE'|| child.result==='INCONCLUSIVE' || child.result==='INPROGRESS'">{{child.result}}</span>
-		                    </td>
-		                    <td>{{child.creationDate | date:'MM/dd/yyyy HH:mm:ss'}}</td> 
+							</td>
+							<td>{{::child.stage === 'CF' ? "Context-free": "Context-based"}}</td>
+		                    <td>{{::child.creationDate | date:'MM/dd/yyyy HH:mm:ss'}}</td> 
 		                    <td></td>                  
 					</tr>        
 		        </tbody>
@@ -151,24 +153,28 @@
 
 
   <div class="modal-body">
-		<div class="btn-group" style="padding-bottom:10px">
-            <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              <i class="fa fa-download"></i> Download As <span class="caret"></span>
-            </button>
-             <ul class="dropdown-menu">
-                 	<li> <a class="point" ng-click="downloadAs('PDF')"><img
-                                        src="images/pdf.png"
-                                        style="height:15px;width:15px">PDF</a></li>
-                    <li><a  class="point" ng-click="downloadAs('XML')"><img
-                                        src="images/xml.jpeg"
-                                        style="height:15px;width:15px">XML</a></li>
-                     <li> <a class="point" ng-click="downloadAs('HTML')"><img
-                                        src="images/html.png"
-                                        style="height:15;width:15px">HTML</a></li>
-             </ul>
-        </div>	
-   <div ng-cloak  ng-bind-html="toHTML(reportItem.html)"></div>
-
+	  	<div ng-show="loading" style="text-align:center">
+	    	<i class="fa fa-circle-o-notch fa-spin fa-3x"></i>
+		</div>	
+		<div ng-show="!loading" >  
+			<div class="btn-group" style="padding-bottom:10px">
+				<button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				<i class="fa fa-download"></i> Download As <span class="caret"></span>
+				</button>
+				<ul class="dropdown-menu">
+						<li> <a class="point" ng-click="downloadAs('PDF')"><img
+											src="images/pdf.png"
+											style="height:15px;width:15px">PDF</a></li>
+						<li><a  class="point" ng-click="downloadAs('XML')"><img
+											src="images/xml.jpeg"
+											style="height:15px;width:15px">XML</a></li>
+						<li> <a class="point" ng-click="downloadAs('HTML')"><img
+											src="images/html.png"
+											style="height:15;width:15px">HTML</a></li>
+				</ul>
+        	</div>	
+   			<div ng-cloak  ng-bind-html="toHTML(reportItem.html)"></div>
+		</div>
   </div>
 </script>
 

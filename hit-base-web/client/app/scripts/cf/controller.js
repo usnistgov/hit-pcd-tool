@@ -771,14 +771,19 @@ angular.module('cf').controller('CFReportCtrl', ['$scope', '$sce', '$http', 'CF'
 
 angular.module('cf').controller('CFSavedReportCtrl', ['$scope', '$sce', '$http', 'CF','ReportService','$modal', function ($scope, $sce, $http, CF,ReportService,$modal) {
 	$scope.cf = CF;
-	$scope.selectReport = function (report) {			
-			ReportService.getUserTSReport(report.id).then(function (report) {
+	$scope.selectReport = function (report) {
+        $scope.loading = true;			
+		ReportService.getUserTSReportHTML(report.id).then(function (report) {
+
             	if (report !== null){
             		$scope.cf.selectedSavedReport = report;
             	}                           
             }, function (error) {    
                 $scope.error = "Sorry, Cannot load the report data. Please try again. \n DEBUG:" + error;                            
-            });
+            }).finally(function () {
+    			$scope.loading = false;
+        	});
+
      };
      
       $scope.downloadAs = function (format) {

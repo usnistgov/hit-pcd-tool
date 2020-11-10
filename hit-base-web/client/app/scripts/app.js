@@ -1,3 +1,4 @@
+angular.module('hit-settings',['common']);
 angular.module('commonServices', []);
 angular.module('common', ['ngResource', 'default', 'xml', 'hl7v2-edi', 'hl7v2', 'edi', 'soap', 'hit-util']);
 angular.module('main', ['common']);
@@ -410,6 +411,10 @@ app.run(function (Session, $rootScope, $location, $modal, TestingSettings, AppIn
         StorageService.set(StorageService.TEST_STEP_VALIDATION_RESULTS_KEY,null);
         StorageService.set(StorageService.TEST_STEP_EXECUTION_STATUSES_KEY,null);
         
+        StorageService.set(StorageService.CB_SELECTED_TESTCASE_ID_KEY,null);
+        StorageService.set(StorageService.TEST_CASE_EXECUTION_STATUSES_KEY,null);
+        StorageService.set(StorageService.TEST_CASE_VALIDATION_RESULTS_KEY,null);
+
     };
 
 
@@ -768,6 +773,9 @@ app.run(function (Session, $rootScope, $location, $modal, TestingSettings, AppIn
         return $rootScope.domain != null && $rootScope.domain.ownerEmails != null && $rootScope.domain.ownerEmails.length() > 0 && $rootScope.domain.ownerEmails.indexOf(email) != -1;
     };
 
+    $rootScope.isDomainOwner = function(){    	
+    	return $rootScope.domain != null && $rootScope.domain.owner === userInfoService.getUsername();        
+    };
 
     $rootScope.isDomainsManagementSupported = function () {    	
         return $rootScope.getAppInfo().options && ($rootScope.getAppInfo().options['DOMAIN_MANAGEMENT_SUPPORTED'] === "true") || userInfoService.isAdmin() || userInfoService.isSupervisor() || userInfoService.isDeployer();

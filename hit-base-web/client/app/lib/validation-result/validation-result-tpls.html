@@ -26,6 +26,23 @@
         Affirmatives
       </a>
       </li>
+		<li
+          active="active.informationals" ng-if="settings.options.validation.show.informationals"" role="presentation"
+          ng-class="{'active':currentType === 'informationals'}"><a ng-click="showValidationTable(validationResult.informationals.categories[0],'informationals')">      <span class="badge failure failure-informationals"
+                                                                      ng-bind="validationResult.informationals.categories[0].data.length"></span>
+        Informationals
+      </a>
+      </li>
+		<li
+          active="active.specerrors" ng-if="settings.options.validation.show.specerrors"" role="presentation"
+          ng-class="{'active':currentType === 'specerrors'}"><a ng-click="showValidationTable(validationResult.specerrors.categories[0],'specerrors')">      <span class="badge failure failure-specerrors"
+                                                                      ng-bind="validationResult.specerrors.categories[0].data.length"></span>
+        Spec Errors
+      </a>
+      </li>
+<li>
+</li>
+
     </ul>
 
     <div ng-show="currentType != null && currentType">
@@ -33,7 +50,7 @@
           <li role="presentation"   ng-repeat="category in validationResult[currentType].categories track by category.title"
               class="validation-result-subtab"
               ng-show="category.data.length > 0"
-              ng-class="{'active': subActive[currentType][category.title]}"><a ng-click="showValidationTable(category,currentType)"> <span class="badge failure" ng-class="{'failure-errors': currentType === 'errors','failure-warnings': currentType === 'warnings','failure-alerts': currentType === 'alerts','failure-affirmatives': currentType === 'affirmatives'}" ng-bind="category.data.length"></span>
+              ng-class="{'active': subActive[currentType][category.title]}"><a ng-click="showValidationTable(category,currentType)"> <span class="badge failure" ng-class="{'failure-errors': currentType === 'errors','failure-warnings': currentType === 'warnings','failure-alerts': currentType === 'alerts','failure-affirmatives': currentType === 'affirmatives','failure-informationals': currentType === 'informationals','failure-specerrors': currentType === 'specerrors' }" ng-bind="category.data.length"></span>
             {{category.title}}</a>
           </li>
         </ul>

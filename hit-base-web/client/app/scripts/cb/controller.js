@@ -901,11 +901,18 @@ angular.module('cb')
         return $rootScope.isReportSavingSupported();
     };
     
-    
-    $scope.savetestcasereport = function () {
-    	  return ReportService.saveTestCaseValidationReport($scope.testCase.id);
-      };
-        
+    $scope.isNotAllManualTest = function (){
+      if ($scope.testCase != null) {
+        for (var i = 0; i < $scope.testCase.children.length; i++) {
+          if($scope.testCase.children[i].testingType !== 'SUT_MANUAL' && $scope.testCase.children[i].testingType !== 'TA_MANUAL' && $scope.testCase.children[i].testingType !== 'MANUAL'){
+            return true;
+          }
+        }   
+      }
+      return false;
+    };
+
+   
       
 
 
@@ -930,7 +937,7 @@ angular.module('cb')
                 testStepReportIds.push(TestExecutionService.getTestStepValidationReport($scope.testCase.children[i]));
               }            
            
-        	ReportService.saveTestCaseValidationReport($scope.testCase.id,testStepReportIds,result,comments).then(function (response) {
+        	ReportService.saveTestCaseValidationReport($scope.testCase.id,testStepReportIds,result,comments,$scope.testCase.nav['testPlan'],$scope.testCase.nav['testGroup']).then(function (response) {
     	  		Notification.success({
                     message: "Report saved successfully!",
                     templateUrl: "NotificationSuccessTemplate.html",
@@ -1360,13 +1367,18 @@ angular.module('cb')
 
 angular.module('cb').controller('CBSavedReportCtrl', ['$scope', '$sce', '$http', 'CB','ReportService','$modal', function ($scope, $sce, $http, CB, ReportService,$modal) {
 	$scope.cb = CB;
-	$scope.selectReport = function (report) {			
-			ReportService.getUserTSReport(report.id).then(function (report) {
+	$scope.selectReport = function (report) {		
+	      $scope.loading=true;	
+				ReportService.getUserTCReportHTML(report.id).then(function (report) {
+
             	if (report !== null){
             		$scope.cb.selectedSavedReport = report;
             	}                           
             }, function (error) {    
-                $scope.error = "Sorry, Cannot load the report data. Please try again. \n DEBUG:" + error;                            
+                $scope.error = "Sorry, Cannot load the report data. Please try again. \n DEBUG:" + error;    
+            }).finally(function () {
+                $scope.loading = false;
+
             });
      };
      
