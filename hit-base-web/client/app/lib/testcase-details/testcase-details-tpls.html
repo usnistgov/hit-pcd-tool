@@ -66,7 +66,7 @@
              ng-show="testCase['savedReports'] && testCase['savedReports'] !== null && testCase['savedReports'].length > 0"
              ng-click="tabs[6] = true;">
           <tab-heading>
-            <i class="fa fa-list-alt"></i>Saved Reports ({{testCase['savedReports'].length}})
+            <i class="fa fa-list-alt"></i>Saved Test Case Reports ({{testCase['savedReports'].length}})
           </tab-heading>
         </tab>
 
@@ -308,7 +308,7 @@
 				<div class="col-md-3">
 					<div class="list-group">
 						
-					<table st-table="tmpReports" st-safe-src="savedReports" class="table table-bordered table-striped " >
+					<table st-table="tmpReports" st-safe-src="savedReports" class="table table-bordered " >
 						<thead class="text-primary">				        
 				        <tr>	
 				        	<th st-sort="creationDate"  st-sort-default="reverse" st-skip-natural="true">Creation Date</th>
@@ -317,7 +317,7 @@
 				        </tr>
 		        
 		       	 </thead>									
-					<tr  ng-repeat="child in tmpReports"  >		         					                    
+					<tr class="reportrow" ng-repeat="child in tmpReports"  >		         					                    
 		                    <td  class="point" ng-click="selectReport(child);">{{child.creationDate | date:'MM/dd/yyyy HH:mm:ss'}}</td>                   
 		                    <td  class="point" ng-click="selectReport(child);">
 		                    	<span ng-if="child.result==='PASSED'|| child.result==='PASSED_NOTABLE_EXCEPTION'"><span class="label label-success"><i class="fa fa-check"></i></span>{{child.result}}</span>
@@ -334,7 +334,11 @@
 
 				<div class="col-md-9">
 					
-					<div ng-show="selectedSavedReport != null">
+					<div ng-show="loading" style="text-align:center">
+				    	<i class="fa fa-circle-o-notch fa-spin fa-3x"></i>
+					</div>	
+					<div ng-show="selectedSavedReport != null && !loading">
+
 						<div class="btn-group" style="padding-bottom:10px">
                             <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fa fa-download"></i> Download As <span class="caret"></span>

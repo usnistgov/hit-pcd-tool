@@ -1,0 +1,78 @@
+<style id="antiClickjack">
+body {
+	display: none !important;
+}
+</style>
+<script type="text/javascript">
+	if (self === top) {
+		var antiClickjack = document.getElementById("antiClickjack");
+		antiClickjack.parentNode.removeChild(antiClickjack);
+	} else {
+		top.location = self.location;
+	}
+</script>
+<div style="margin:10px">
+	<div class="panel panel-info">
+		<div class="panel-heading">File validations</div>
+		<div class="panel-body">
+			<div class="col-md-12" style="min-height: 550px" ng-show="step == 0">
+
+				<div class="panel panel-default">
+					<div class="panel-body">
+						<div class="row">
+							<div class="col-md-12">
+								<div class="upload-drop-box" nv-file-over="" nv-file-drop="" over-class="upload-drop-box-file-over" uploader="zipUploader">
+									<label class="btn btn-success" style="width: 400px; text-align: left"> <i class="fa fa-file" aria-hidden="true"></i> Browse/Drag Context-Free Package
+										(.zip) to validate<input type="file" accept="application/zip" nv-file-select="" uploader="zipUploader" style="display: none">
+									</label> <br> <i ng-show="zipUploader.queue.length"> <span ng-show="zipUploader.queue[0].isSuccess"><i class="fa fa-check"></i></span> {{zipUploader.queue[0].file.name}},
+										{{ zipUploader.queue[0].file.size/1024/1024|number:2 }} MB
+									</i>
+
+								</div>
+							</div>
+						</div>
+						<div class="col-md-12">
+							<div class="progress" style="">
+								<div class="progress-bar" role="progressbar" ng-style="{ 'width': zipUploader.progress + '%' }"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+			<div ng-show="step == 1">
+				<div ng-show="profileValidationErrors.length  || constraintValidationErrors.length || valueSetValidationErrors.length || (executionError != null && executionError != '') ||  (validationReport != null && validationReport != '')   ">
+					<!-- Profile Errors -->
+
+					<div class="col-md-12" style="margin-bottom: 10px">
+						<div class="pull-left">
+							<button type="button" class="btn btn-primary btn-md" ng-click="step = 0">
+								<i class="fa fa-arrow-left"></i> Back
+							</button>
+						</div>
+					</div>
+
+					<div class="col-md-12">
+
+						<accordion close-others="true" ng-show="executionError != null && executionError != ''">
+						<accordion-group is-open="true" panel-class="panel-danger">
+						<accordion-heading> <i style="font-size: 20px" class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+						Processing error </accordion-heading>
+						<div>{{executionError}}</div>
+						</accordion-group> </accordion>
+
+						<ng-bind-html ng-show="validationReport != null && validationReport != ''" ng-bind-html="validationReport"> </ng-bind-html>
+
+					</div>
+					<div class="col-md-12" style="margin-top: 10px">
+						<div class="pull-left">
+							<button type="button" class="btn btn-primary btn-md" ng-click="step = 0">
+								<i class="fa fa-arrow-left"></i> Back
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div></div>

@@ -239,7 +239,7 @@ angular.module('upload')
 
         $scope.selectTP = function () {
             $scope.testcase = null;
-            console.log("$scope.selectedTP.id=" + $scope.selectedTP.id);
+//            console.log("$scope.selectedTP.id=" + $scope.selectedTP.id);
             // console.log("$scope.existingTP.selected=" + angular.toJson($scope.existingTP.selected));
             // console.log("$scope.existingTP.selected=" + angular.fromJson($scope.existingTP.selected));
             // console.log("$scope.existingTP.selected=" + $scope.existingTP.selected);
@@ -250,7 +250,7 @@ angular.module('upload')
                 $scope.testcase['name'] = $scope.existingTP.selected.name;
                 $scope.testcase['description'] = $scope.existingTP.selected.description;
                 $scope.testcase['groupId'] = $scope.existingTP.selected.id;
-                console.log("$scope.testcase=" + angular.toJson($scope.testcase));
+//                console.log("$scope.testcase=" + angular.toJson($scope.testcase));
             }
 
         };
@@ -613,7 +613,7 @@ angular.module('upload').controller('UploadTokenCtrl', ['$scope', '$http', 'CF',
 
     $scope.selectTP = function () {
         $scope.testcase = null;
-        console.log("$scope.selectedTP.id=" + $scope.selectedTP.id);
+//        console.log("$scope.selectedTP.id=" + $scope.selectedTP.id);
         // console.log("$scope.existingTP.selected=" + angular.toJson($scope.existingTP.selected));
         // console.log("$scope.existingTP.selected=" + angular.fromJson($scope.existingTP.selected));
         // console.log("$scope.existingTP.selected=" + $scope.existingTP.selected);
@@ -624,7 +624,7 @@ angular.module('upload').controller('UploadTokenCtrl', ['$scope', '$http', 'CF',
             $scope.testcase['name'] = $scope.existingTP.selected.name;
             $scope.testcase['description'] = $scope.existingTP.selected.description;
             $scope.testcase['groupId'] = $scope.existingTP.selected.id;
-            console.log("$scope.testcase=" + angular.toJson($scope.testcase));
+//            console.log("$scope.testcase=" + angular.toJson($scope.testcase));
         }
 
     };

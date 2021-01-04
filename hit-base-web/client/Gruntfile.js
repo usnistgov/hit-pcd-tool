@@ -355,6 +355,8 @@ module.exports = function (grunt) {
               'styles/fonts/{,*/}*.*',
               'styles/report.css',
               'styles/carousel.css',
+              'styles/font-awesome.min.css',
+              'styles/bootstrap.min.css',
               'lang/*'
             ]
           },

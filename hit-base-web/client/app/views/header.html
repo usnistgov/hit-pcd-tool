@@ -14,7 +14,7 @@ body {
 <!-- Fixed navbar -->
 <div class="navbar navbar-default navbar-static-top" role="navigation">
 	<div class="brand" id="appheader">
-		<a style="display: inline-block; text-shadow: none" href="#">
+		<a style="display: inline-block; text-shadow: none" href="#/home">
 			<div id="apptitle">
 				{{appInfo.options.ORGANIZATION_NAME != null &&
 				appInfo.options.ORGANIZATION_NAME != undefined ?
@@ -44,10 +44,10 @@ body {
 							<li ng-show="domainsByOwner['my'].length > 0"
 								ng-click="appInfo.selectedDomain = dom.domain; selectDomain(appInfo.selectedDomain)"
 								ng-class="{'domain-selected': domain.domain === dom.domain, 'disabled': domain.domain === dom.domain}"
-								ng-repeat="dom in domainsByOwner['my']"><a href="#"> <span
-									style="color: #438007" ng-show="dom.scope === 'GLOBAL'"><i
+								ng-repeat="dom in domainsByOwner['my'] | orderBy:'name'"><a href="#"> <span
+									style="color: #438007" ng-show="dom.scope === 'GLOBAL'" title="public"><i
 										class="fa fa-circle fa-fw"></i></span> <span style="color: #ff240b"
-									ng-show="dom.scope === 'USER'"><i
+									ng-show="dom.scope === 'USER'" title="private"><i
 										class="fa fa-circle fa-fw"></i></span> {{dom.name}}
 							</a></li>
 							<li class="dropdown-header"
@@ -56,10 +56,10 @@ body {
 							<li ng-show="domainsByOwner['others'].length > 0"
 								ng-click="appInfo.selectedDomain = dom.domain; selectDomain(appInfo.selectedDomain)"
 								ng-class="{'domain-selected': domain.domain === dom.domain}"
-								ng-repeat="dom in domainsByOwner['others']"><a href="#">
-									<span style="color: #438007" ng-show="dom.scope === 'GLOBAL'"><i
+								ng-repeat="dom in domainsByOwner['others'] | orderBy:'name'"><a href="#">
+									<span style="color: #438007" ng-show="dom.scope === 'GLOBAL'" title="public"><i
 										class="fa fa-circle fa-fw"></i></span> <span style="color: #ff240b"
-									ng-show="dom.scope === 'USER'"><i
+									ng-show="dom.scope === 'USER'" title="private" ><i
 										class="fa fa-circle fa-fw"></i></span> {{dom.name}}
 							</a></li>
 						</ul>
@@ -81,12 +81,13 @@ body {
 						</ul>
 					</div>
 			</span>
-		</span>
 			<button ng-show="isAuthenticated() && isDomainsManagementSupported()"
 				ng-click="createDomain()" class="btn btn-primary btn-sm"
 				title="Create New Tool Scope">
 				<i class="fa fa-plus"></i>Create
 			</button>
+		</span>
+			
 
 		</span>
 	</div>
@@ -158,7 +159,7 @@ body {
 						class="divider"></li>
 											
 					<li ng-if="isReportSavingSupported()" ng-class="isActive('/reports')"><a
-						class="point" href="#/reports"><i class="fa fa-cog"></i> My Reports</a></li>
+						class="point" href="#/reports"><i class="fa fa-cog"></i> My Validation Reports</a></li>
 					<li ng-if="isReportSavingSupported()" role="separator"
 						class="divider"></li>	
 						

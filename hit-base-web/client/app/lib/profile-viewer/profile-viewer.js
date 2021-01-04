@@ -482,10 +482,14 @@
        *
        */
       var processMessage = function () {
+    	
+    	//process message constraints
+    	processConstraints($scope.model.message, null);
+    	      
+    	$scope.model.message.children = $filter('orderBy')($scope.model.message.children, 'position');
         angular.forEach($scope.model.message.children, function (segmentRefOrGroup) {
           processElement(segmentRefOrGroup);
-        });
-        $scope.model.message.children = $filter('orderBy')($scope.model.message.children, 'position');
+        });        
         if ($scope.options.relevance) {
           $scope.onlyRelevantElementsModel = $scope.model;
         } else {

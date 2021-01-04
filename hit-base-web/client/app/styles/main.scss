@@ -908,6 +908,16 @@ table.forumline > tr > td  {
 //  color: #3c763d;
 }
 
+.failure-informationals{
+  background-color: #5bc0de;
+  border-color: #96c7d6;
+}
+
+.failure-specerrors{
+	background-color: #999;
+    border-color: #9e9e9e;
+}
+
 .failure-dqa{
   background-color: #f298e0;
   border-color: #f2ade5;
@@ -2689,7 +2699,39 @@ div.upload-error-table div.fixed-table-container-inner {
   width: 97.90%;
 }
 
-
 ul.dropdown-menu > li.domain-selected, ul.dropdown-menu > li.domain-selected > a {
   background: #ffef8f;
+}
+
+.reportrow:hover {
+  background-color: #3276B2;
+  color: white;
+  filter: brightness(125%);
+  cursor: pointer;
+}
+
+.reportrowselected {
+  background-color: #ffef8f;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+
+.notificationrow:hover {
+  background-color: #3276B2;
+  color: white;
+  filter: brightness(125%);
+  cursor: pointer;
+}
+
+.notificationrowselected{
+  background-color: green;
+  color: white;
+  filter: brightness(125%);
+  cursor: pointer;
+}
+
+.validation-clasification-select {
+  background-color: white;
+  max-width: 300px;
 }

@@ -29,10 +29,11 @@
 	"uploadMaxSize": "100MB",
 	"uploadContentTypes": "application/xml,text/xml,text/plain",
 	"options": {
-		"CB_MANAGEMENT_SUPPORTED": "false",
-		"CF_MANAGEMENT_SUPPORTED": "false",
+		"CB_MANAGEMENT_SUPPORTED": "true",
+		"CF_MANAGEMENT_SUPPORTED": "true",
 		"USER_LOGIN_SUPPORTED": "true",
-		"DOMAIN_MANAGEMENT_SUPPORTED": "false",
+		"DOMAIN_MANAGEMENT_SUPPORTED": "true",
+		"DOMAIN_SELECTION_SUPPORTED": "true",
 		"ORGANIZATION_NAME": "NIST",
 		"DIVISION_LINK": "NA",
 		"ORGANIZATION_LOGO": "images/nist_logo.gif",
@@ -40,7 +41,7 @@
 		"DOC_MANAGEMENT_SUPPORTED": "false",
 		"DOWNLOAD_WAR_DISABLED": "false",
 		"PRIVACY_LINK": "NA",
-		"DOMAIN_SELECTON_SUPPORTED": "false",
+		"DOMAIN_SELECTON_SUPPORTED": "true",
 		"DIVISION_LOGO": "NA",
 		"ORGANIZATION_LINK": "",
 		"DIVISION_NAME": "NA",
@@ -58,10 +59,16 @@
     },
     {
       "value": "edos",
-      "name": "EDos",
+      "name": "EDosd",
       "homeTitle": "Welcome to the NIST Labs Validation Suite",
       "disabled": false,
       "ownerEmails":["haffo@nist.gov"]
     }
   ]
 }
+
+
+
+
+
+

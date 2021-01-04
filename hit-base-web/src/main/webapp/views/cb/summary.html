@@ -109,7 +109,7 @@
                                 <li><a class="point" ng-click="exportAs('html')">As HTML</a></li>
                                 <li><a class="point" ng-click="exportAs('xml')">As XML</a></li>
                             </ul>
-                            <button style="margin-left:10px" ng-disabled="saveButtonDisabled" ng-if="isReportSavingSupported() && isAuthenticated()" type="button" class="btn btn-success btn-xs" ng-click="savetestcasereport()"><span><i class="fa fa-save fa-fw"></i>{{saveButtonText}}</span>
+                            <button style="margin-left:10px" ng-disabled="saveButtonDisabled" ng-if="isReportSavingSupported() && isAuthenticated() && isNotAllManualTest()" type="button" class="btn btn-success btn-xs" ng-click="savetestcasereport()"><span><i class="fa fa-save fa-fw"></i>{{saveButtonText}}</span>
                             </button>                            
                         </div>
                     </td>

@@ -1,3 +1,4 @@
+angular.module('hit-settings',['common']);
 angular.module('commonServices', []);
 angular.module('common', ['ngResource', 'default', 'xml', 'hl7v2-edi', 'hl7v2', 'edi', 'soap', 'hit-util']);
 angular.module('main', ['common']);
@@ -67,7 +68,8 @@ var app = angular.module('hit-app', [
     'transport',
     'angular-cache',
     'cache',
-    'ngFileSaver'
+    'ngFileSaver',
+    'LocalForageModule'
 ]);
 
 var httpHeaders,
@@ -84,7 +86,6 @@ var httpHeaders,
 //the message to be shown to the user
 var msg = {};
 app.config(function ($routeProvider, $httpProvider, localStorageServiceProvider, KeepaliveProvider, IdleProvider, NotificationProvider, $provide) {
-
 
     localStorageServiceProvider
         .setPrefix('hit-app')
@@ -410,6 +411,10 @@ app.run(function (Session, $rootScope, $location, $modal, TestingSettings, AppIn
         StorageService.set(StorageService.TEST_STEP_VALIDATION_RESULTS_KEY,null);
         StorageService.set(StorageService.TEST_STEP_EXECUTION_STATUSES_KEY,null);
         
+        StorageService.set(StorageService.CB_SELECTED_TESTCASE_ID_KEY,null);
+        StorageService.set(StorageService.TEST_CASE_EXECUTION_STATUSES_KEY,null);
+        StorageService.set(StorageService.TEST_CASE_VALIDATION_RESULTS_KEY,null);
+
     };
 
 
@@ -562,7 +567,7 @@ app.run(function (Session, $rootScope, $location, $modal, TestingSettings, AppIn
         httpHeaders.common['Accept'] = 'application/json';
         httpHeaders.common['Authorization'] = 'Basic ' + auth;
         $http.get('api/accounts/login').success(function () {
-            console.log("logging success...");
+//            console.log("logging success...");
             httpHeaders.common['Authorization'] = null;
             $http.get('api/accounts/cuser').then(function (result) {
                 if (result.data && result.data != null) {
@@ -768,8 +773,11 @@ app.run(function (Session, $rootScope, $location, $modal, TestingSettings, AppIn
         return $rootScope.domain != null && $rootScope.domain.ownerEmails != null && $rootScope.domain.ownerEmails.length() > 0 && $rootScope.domain.ownerEmails.indexOf(email) != -1;
     };
 
+    $rootScope.isDomainOwner = function(){    	
+    	return $rootScope.domain != null && $rootScope.domain.owner === userInfoService.getUsername();        
+    };
 
-    $rootScope.isDomainsManagementSupported = function () {
+    $rootScope.isDomainsManagementSupported = function () {    	
         return $rootScope.getAppInfo().options && ($rootScope.getAppInfo().options['DOMAIN_MANAGEMENT_SUPPORTED'] === "true") || userInfoService.isAdmin() || userInfoService.isSupervisor() || userInfoService.isDeployer();
     };
 
@@ -779,7 +787,7 @@ app.run(function (Session, $rootScope, $location, $modal, TestingSettings, AppIn
     };
     
     $rootScope.isDomainSelectionSupported = function () {
-        return $rootScope.getAppInfo().options && ($rootScope.getAppInfo().options['DOMAIN_SELECTON_SUPPORTED'] === "true");
+        return $rootScope.getAppInfo().options && ($rootScope.getAppInfo().options['DOMAIN_SELECTION_SUPPORTED'] === "true");
     };
     
     $rootScope.isUserLoginSupported = function () {
@@ -790,6 +798,16 @@ app.run(function (Session, $rootScope, $location, $modal, TestingSettings, AppIn
         return  $rootScope.domain &&  $rootScope.domain.options && ($rootScope.domain.options['REPORT_SAVING_SUPPORTED'] === "true");
     };
 
+    $rootScope.isToolScopeSelectionDisplayed = function () {
+        return $rootScope.getAppInfo().options && ($rootScope.getAppInfo().options['TOOL_SCOPE_SELECTON_DISPLAYED'] === "true");
+    };
+    
+    $rootScope.isUserLoginSupported = function () {
+        return $rootScope.getAppInfo().options && ($rootScope.getAppInfo().options['USER_LOGIN_SUPPORTED'] === "true");
+    };
+       
+    
+    
 
 });
 

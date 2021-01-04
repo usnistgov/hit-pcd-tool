@@ -20,7 +20,9 @@ angular.module('cb').factory('CB',
             },
             getContent: function () {
                 return  CB.message.content;
-            }
+            },
+            savedReports: [],
+            selectedSavedReport: null
         };
         return CB;
     }]);
@@ -45,37 +47,53 @@ angular.module('cb').factory('CBTestPlanListLoader', ['$q', '$http','StorageServ
 ]);
 
 
-angular.module('cb').factory('CBTestPlanLoader', ['$q', '$http', '$rootScope','CacheFactory',
-	function ($q, $http, $rootScope,CacheFactory) {
+angular.module('cb').factory('CBTestPlanLoader', ['$q', '$http', '$rootScope','CacheFactory','$localForage',
+	function ($q, $http, $rootScope,CacheFactory,$localForage) {
 	return function (id,domain) {
 		var delay = $q.defer();
 
-		if (!CacheFactory.get($rootScope.appInfo.name)) {
-			CacheFactory.createCache($rootScope.appInfo.name, {
-				storageMode: 'localStorage'
-			});
-		}				
-		var cache = CacheFactory.get($rootScope.appInfo.name);
-
 		$http.get("api/cb/testplans/" + id+"/updateDate", { timeout: 180000}).then(
 				function (date) {	
-					var cacheData = cache.get("api/cb/testplans/" + id);
-					if (cacheData && cacheData.updateDate === date.data) {
-						delay.resolve(cache.get("api/cb/testplans/" + id));
-					} else {
-						$http.get("api/cb/testplans/" + id, { timeout: 180000}).then(
-								function (object) {	
-									cache.put("api/cb/testplans/" + id,angular.fromJson(object.data)),
-									delay.resolve(angular.fromJson(object.data));
-								},
-								function (response) {
-									delay.reject(response.data);
-								}
-						);
-					}					
+					$localForage.getItem("api/cb/testplans/" + id,true).then(function(data) {
+						//cache found
+			            var cacheData = data;
+			            if (cacheData && cacheData.updateDate === date.data) {
+							delay.resolve(data);
+						} else {
+							$http.get("api/cb/testplans/" + id, { timeout: 180000}).then(
+									function (object) {	
+										$localForage.setItem("api/cb/testplans/" + id,angular.fromJson(object.data)).then(function() {});
+										delay.resolve(angular.fromJson(object.data));
+									},
+									function (response) {
+										delay.reject(response.data);
+									}
+							);
+						}
+			        },function(error){
+			        	//no cache found
+			        	$http.get("api/cb/testplans/" + id, { timeout: 180000}).then(
+			        			function (object) {	
+			        				$localForage.setItem("api/cb/testplans/" + id,angular.fromJson(object.data)).then(function() {});
+			        				delay.resolve(angular.fromJson(object.data));
+			        			},
+			        			function (response) {
+			        				delay.reject(response.data);
+			        			}
+			        	);
+			        });
+									
 				},
 				function (error) {
-					delay.reject(error.data);
+					$http.get("api/cb/testplans/" + id, { timeout: 180000}).then(
+		        			function (object) {	
+		        				$localForage.setItem("api/cb/testplans/" + id,angular.fromJson(object.data)).then(function() {});
+		        				delay.resolve(angular.fromJson(object.data));
+		        			},
+		        			function (response) {
+		        				delay.reject(response.data);
+		        			}
+		        	);
 				}
 		);
 		return delay.promise;
@@ -185,9 +203,8 @@ angular.module('cb').factory('CBTestPlanManager', ['$q', '$http',
       },
 
       updateTestCaseGroupName:  function (node) {
-    	  console.log("coucouddd");
         var delay = $q.defer();
-        $http.post('api/cb/management/testCaseGroups/'+ node.id + '/name', {"name":node.editName}).then(
+        $http.post('api/cb/management/testCaseGroups/'+ node.id + '/name', {name:node.editName}).then(
           function (object) {
             delay.resolve(angular.fromJson(object.data));
           },
@@ -200,7 +217,7 @@ angular.module('cb').factory('CBTestPlanManager', ['$q', '$http',
 
       updateTestCaseName:  function (node) {
         var delay = $q.defer();
-        $http.post('api/cb/management/testCases/'+ node.id + '/name',  {"name":node.editName}).then(
+        $http.post('api/cb/management/testCases/'+ node.id + '/name', {name:node.editName}).then(
           function (object) {
             delay.resolve(angular.fromJson(object.data));
           },
@@ -212,7 +229,7 @@ angular.module('cb').factory('CBTestPlanManager', ['$q', '$http',
       },
       updateTestStepName:  function (node) {
         var delay = $q.defer();
-        $http.post('api/cb/management/testSteps/'+ node.id + '/name',  {"name":node.editName}).then(
+        $http.post('api/cb/management/testSteps/'+ node.id + '/name', {name:node.editName}).then(
           function (object) {
             delay.resolve(angular.fromJson(object.data));
           },
@@ -223,9 +240,8 @@ angular.module('cb').factory('CBTestPlanManager', ['$q', '$http',
         return delay.promise;
       },
       updateTestPlanName:  function (node) {
-    	  console.log("coucou");
         var delay = $q.defer();
-        $http.post('api/cb/management/testPlans/'+ node.id + '/name',  {"name":node.editName}).then(
+        $http.post('api/cb/management/testPlans/'+ node.id + '/name', {name:node.editName}).then(
           function (object) {
             delay.resolve(angular.fromJson(object.data));
           },

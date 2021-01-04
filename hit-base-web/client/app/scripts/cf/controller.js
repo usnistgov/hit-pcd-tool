@@ -10,21 +10,20 @@ angular.module('cf')
         $scope.setSubActive = function (tab) {
             $rootScope.setSubActive(tab);
             if (tab === '/cf_execution') {
-                $rootScope.$broadcast('event:cf:initExecution');
-                $scope.$broadcast('cf:refreshEditor');
+                $scope.$broadcast('event:cf:initExecution');
             } else if (tab === '/cf_management') {
                 $scope.$broadcast('event:cf:initManagement');
             }
         };
 
-        $scope.initEnv = function () {
-            var tab = StorageService.get(StorageService.ACTIVE_SUB_TAB_KEY);
-            if (tab == null || tab != '/cf_execution') tab = '/cf_execution';
-            $scope.setSubActive(tab);
-            // $scope.$on('cf:testCaseLoaded', function (event, testCase, tab) {
-            //   $scope.testCase = testCase;
-            // });
-        };
+        // $scope.initEnv = function () {
+        //     var tab = StorageService.get(StorageService.ACTIVE_SUB_TAB_KEY);
+        //     if (tab == null || tab != '/cf_execution') tab = '/cf_execution';
+        //     $scope.setSubActive(tab);
+        //     // $scope.$on('cf:testCaseLoaded', function (event, testCase, tab) {
+        //     //   $scope.testCase = testCase;
+        //     // });
+        // };
 
 
         if ($scope.token !== undefined) {
@@ -42,11 +41,20 @@ angular.module('cf')
                     $scope.setSubActive("/cf_management");
                     $scope.$broadcast('event:cf:manage', decodeURIComponent($routeParams.scope));
                 });
+            }else if($scope.nav === 'execution'){
+                StorageService.set(StorageService.CF_LOADED_TESTCASE_ID_KEY, decodeURIComponent($routeParams.group));
+                $scope.setSubActive("/cf_execution");
             } else {
-                $timeout(function () {
-                    $scope.setSubActive("/cf_execution");
-                    $scope.$broadcast('event:cf:execute', decodeURIComponent($routeParams.scope), decodeURIComponent($routeParams.cat), decodeURIComponent($routeParams.group));
-                });
+                var tab = StorageService.get(StorageService.ACTIVE_SUB_TAB_KEY);
+                if(tab === '/cf_management'){
+                    $scope.setSubActive("/cf_management");
+                }else{
+                    $timeout(function () {
+                        $scope.setSubActive("/cf_execution");
+                        // $scope.$broadcast('event:cf:execute', decodeURIComponent($routeParams.scope), decodeURIComponent($routeParams.cat), decodeURIComponent($routeParams.group));
+                    });
+                }
+                
             }
         }
 
@@ -54,8 +62,8 @@ angular.module('cf')
 
 
 angular.module('cf')
-    .controller('CFTestExecutionCtrl', ['$scope', '$http', 'CF', '$window', '$modal', '$filter', '$rootScope', 'CFTestPlanExecutioner', '$timeout', 'StorageService', 'TestCaseService', 'TestStepService', 'userInfoService', function ($scope, $http, CF, $window, $modal, $filter, $rootScope, CFTestPlanExecutioner, $timeout, StorageService, TestCaseService, TestStepService, userInfoService) {
-
+    .controller('CFTestExecutionCtrl', ['$scope', '$http', 'CF', '$window', '$modal', '$filter', '$rootScope', 'CFTestPlanExecutioner', '$timeout', 'StorageService', 'TestCaseService', 'TestStepService', 'userInfoService','$routeParams', function ($scope, $http, CF, $window, $modal, $filter, $rootScope, CFTestPlanExecutioner, $timeout, StorageService, TestCaseService, TestStepService, userInfoService,$routeParams) {
+        $scope.isInit = false;
         $scope.cf = CF;
         $scope.loading = false;
         $scope.loadingTC = false;
@@ -70,6 +78,9 @@ angular.module('cf')
         $scope.selectedScope = {key: null};
         $scope.allTestPlanScopes = [{key: 'USER', name: 'Private'}, {key: 'GLOBAL', name: 'Public'}];
         $scope.testPlanScopes = [];
+
+       
+
 
         var testCaseService = new TestCaseService();
 
@@ -128,7 +139,7 @@ angular.module('cf')
             $scope.loading = false;
             $scope.selectedTP.id = "";
             StorageService.set(StorageService.CF_SELECTED_TESTPLAN_SCOPE_KEY, $scope.selectedScope.key);
-            StorageService.set(StorageService.CF_LOADED_TESTCASE_ID_KEY, null);
+            // StorageService.set(StorageService.CF_LOADED_TESTCASE_ID_KEY, null);
 
             if ($scope.selectedScope.key && $scope.selectedScope.key !== null && $scope.selectedScope.key !== "" && $rootScope.domain != null && $rootScope.domain.domain != null) {
                 $scope.loading = true;
@@ -215,8 +226,8 @@ angular.module('cf')
                         StorageService.remove(StorageService.CF_EDITOR_CONTENT_KEY);
                     }
                     $scope.$broadcast('cf:testCaseLoaded', $scope.testCase);
-//                    $scope.$broadcast('cf:profileLoaded', $scope.testCase.testContext.profile);
-//                    $scope.$broadcast('cf:valueSetLibraryLoaded', $scope.testCase.testContext.vocabularyLibrary);
+                    $scope.$broadcast('cf:profileLoaded', $scope.testCase.testContext.profile);
+                    $scope.$broadcast('cf:valueSetLibraryLoaded', $scope.testCase.testContext.vocabularyLibrary);
                 }
                 $scope.loadingTC = false;
             });
@@ -256,6 +267,21 @@ angular.module('cf')
         };
 
         $scope.initTesting = function () {
+           if (!$scope.isInit){
+
+            $scope.token = $routeParams.x;
+            $scope.nav = $routeParams.nav;
+
+            if($scope.nav === 'execution'){
+                StorageService.set(StorageService.CF_LOADED_TESTCASE_ID_KEY, decodeURIComponent($routeParams.group));
+            } 
+
+
+
+
+
+
+            $scope.isInit = true;
             $timeout(function () {
                 if (userInfoService.isAuthenticated()) {
                     $scope.testPlanScopes = $scope.allTestPlanScopes;
@@ -266,7 +292,9 @@ angular.module('cf')
                     $scope.selectedScope.key = $scope.allTestPlanScopes[1].key; // GLOBAL
                 }
                 $scope.selectScope();
-            }, 1000);
+            }, 100);
+           }
+            
         };
 
 
@@ -300,30 +328,39 @@ angular.module('cf')
                 $scope.tree.collapse_all();
         };
 
-        $scope.$on("$destroy", function () {
-            var testStepId = StorageService.get(StorageService.CF_LOADED_TESTCASE_ID_KEY);
-            if (testStepId != null) TestStepService.clearRecords(testStepId);
-        });
+       
 
-        $rootScope.$on('event:logoutConfirmed', function () {
+        var logoutListener = $rootScope.$on('event:logoutConfirmed', function () {
             $scope.initTesting();
         });
 
-        $rootScope.$on('event:loginConfirmed', function () {
+        var loginListener = $rootScope.$on('event:loginConfirmed', function () {
             $scope.initTesting();
         });
 
-        $scope.$on('event:cf:execute', function (event, scope, cat, group) {
+        console.log("inint");
+        var executeListener = $scope.$on('event:cf:execute', function (event, scope, group) {
+            console.log("Couou");
             $scope.selectedScope.key = scope && scope != null && (scope === 'USER' || scope === 'GLOBAL') ? scope : $scope.testPlanScopes[0] != null ? $scope.testPlanScopes[0].key: 'GLOBAL';
             if (group && group != null) {
                 $scope.selectedTP.id = group;
+                console.log(group);
                 StorageService.set(StorageService.CF_SELECTED_TESTPLAN_ID_KEY, group);
             }
             $scope.selectScope();
         });
-
-        $rootScope.$on('event:cf:initExecution', function () {
+        
+        var initExecutionListener = $scope.$on('event:cf:initExecution', function () {
             $scope.initTesting();
+        });
+
+         $scope.$on("$destroy", function () {
+            initExecutionListener();
+            executeListener();
+            logoutListener();
+            loginListener();
+            var testStepId = StorageService.get(StorageService.CF_LOADED_TESTCASE_ID_KEY);
+            if (testStepId != null) TestStepService.clearRecords(testStepId);
         });
 
 
@@ -654,6 +691,28 @@ angular.module('cf')
                     
                 }
             });
+            
+            
+            $rootScope.$on('cf:updateSavedReports', function (event, teptStep) {
+            	if (userInfoService.isAuthenticated() && $rootScope.isReportSavingSupported()){
+                	$timeout(function() {
+                        ReportService.getAllTSByAccountIdAndDomainAndtestStepId($rootScope.domain.domain,teptStep.persistentId).then(function (reports) {
+                        	if (reports !== null){
+                        		$scope.cf.selectedSavedReport = null;
+                                $scope.cf.savedReports = reports;
+                        	}else{
+                        		$scope.cf.savedReports = [];
+                        		$scope.cf.selectedSavedReport = null;
+                        	}                             
+                        }, function (error) {
+                    		$scope.cf.selectedSavedReport = null;
+                        	$scope.cf.savedReports = [];
+                        	$scope.loadingAll = false;
+                            $scope.error = "Sorry, Cannot load the reports. Please try again. \n DEBUG:" + error;                            
+                        });
+                    },100);
+                }
+            });
 
             $rootScope.$on('cf:duplicatesRemoved', function (event, report) {
                 $scope.vLoading = false;
@@ -712,14 +771,19 @@ angular.module('cf').controller('CFReportCtrl', ['$scope', '$sce', '$http', 'CF'
 
 angular.module('cf').controller('CFSavedReportCtrl', ['$scope', '$sce', '$http', 'CF','ReportService','$modal', function ($scope, $sce, $http, CF,ReportService,$modal) {
 	$scope.cf = CF;
-	$scope.selectReport = function (report) {			
-			ReportService.getUserTSReport(report.id).then(function (report) {
+	$scope.selectReport = function (report) {
+        $scope.loading = true;			
+		ReportService.getUserTSReportHTML(report.id).then(function (report) {
+
             	if (report !== null){
             		$scope.cf.selectedSavedReport = report;
             	}                           
             }, function (error) {    
                 $scope.error = "Sorry, Cannot load the report data. Please try again. \n DEBUG:" + error;                            
-            });
+            }).finally(function () {
+    			$scope.loading = false;
+        	});
+
      };
      
       $scope.downloadAs = function (format) {
@@ -909,19 +973,25 @@ angular.module('cf')
         });
 
 
-        $rootScope.$on('event:logoutConfirmed', function () {
+        var logoutListener =$rootScope.$on('event:logoutConfirmed', function () {
             $scope.initManagement();
         });
 
-        $scope.$on('event:cf:initManagement', function () {
+        var initManagementListener = $scope.$on('event:cf:initManagement', function () {
             $scope.initManagement();
         });
 
 
-        $rootScope.$on('event:loginConfirmed', function () {
+        var loginListener = $rootScope.$on('event:loginConfirmed', function () {
             $scope.initManagement();
         });
 
+
+        $scope.$on("$destroy", function () {
+            initManagementListener();
+            logoutListener();
+            loginListener();
+        });
 
         $scope.initManagement = function () {
             $timeout(function () {
@@ -1030,6 +1100,9 @@ angular.module('cf')
                     $scope.testCases = [testPlan];
                     $scope.testcase = null;
                     $scope.generateTreeNodes(testPlan);
+                    
+                    $scope.selectGroup(testPlan);
+                    
                     StorageService.set(StorageService.CF_MANAGE_SELECTED_TESTPLAN_ID_KEY, $scope.selectedTP.id);
                     $scope.loadingTP = false;
                 }, function (error) {
@@ -1453,6 +1526,8 @@ angular.module('cf')
                             parentNode['children'] = [];
                         parentNode['children'].push(treeNode);
                         parentNode["children"] = $filter('orderBy')(parentNode["children"], 'position');
+
+                        $scope.selectGroup(group);
                     }
                 });
         };
@@ -1516,6 +1591,81 @@ angular.module('cf')
 
 
                                             $scope.selectedScope.key = 'GLOBAL';
+                                            $scope.selectScope();
+                                            $scope.selectGroup($scope.selectedNode);
+                                            Notification.success({
+                                                message: "Profile Group has been successfully published !",
+                                                templateUrl: "NotificationSuccessTemplate.html",
+                                                scope: $rootScope,
+                                                delay: 5000
+                                            });
+                                            $scope.afterSave($scope.token);
+                                        }
+                                    } else {
+                                        $scope.executionError.push(response.debugError);
+                                    }
+                                    $scope.loading = false;
+                                }, function (error) {
+                                    $scope.loading = false;
+                                    $scope.executionError.push(error.data);
+                                });
+                            }
+                        }, function (error) {
+                            $scope.loading = false;
+                            $scope.executionError.push(error.data);
+                        });
+                    }
+                });
+        };
+        
+        $scope.unPublishGroup = function () {
+            $scope.error = null;
+            $scope.executionError = [];
+            var modalInstance = $modal.open({
+                templateUrl: 'views/cf/manage/confirm-unpublish-group.html',
+                controller: 'ConfirmDialogCtrl',
+                size: 'md',
+                backdrop: 'static',
+                keyboard: false
+            });
+            modalInstance.result.then(
+                function (result) {
+                    if (result) {
+                        $scope.loading = true;
+                        $scope.executionError = null;
+                        $scope.loading = true;
+                        $scope.error = null;
+                        $scope.executionError = [];
+
+                        CFTestPlanManager.saveTestPlan("hl7v2", "USER", $scope.token, $scope.getUpdatedProfiles(), $scope.getRemovedProfiles(), $scope.getAddedProfiles(), $scope.testcase).then(function (result) {
+                            if (result.status === "SUCCESS") {
+                                CFTestPlanManager.unPublishTestPlan($scope.testcase.groupId).then(function (result) {
+                                    if (result.status === "SUCCESS") {
+                                        $scope.selectedNode = $scope.testCases[0];
+                                        if ($scope.selectedNode != null) {
+                                            $scope.selectedNode['name'] = $scope.testcase['name'];
+                                            $scope.selectedNode['description'] = $scope.testcase['description'];
+                                            var testPlan = $scope.findTestPlan($scope.selectedNode.id, $scope.existingTestPlans);
+                                            testPlan.name = $scope.testcase['name'];
+                                            testPlan.description = $scope.testcase['description'];
+                                            Notification.success({
+                                                message: "Profile Group saved successfully!",
+                                                templateUrl: "NotificationSuccessTemplate.html",
+                                                scope: $rootScope,
+                                                delay: 5000
+                                            });
+
+                                            $scope.uploaded = false;
+                                            $scope.profileMessages = [];
+                                            $scope.profileMessagesTmp = [];
+                                            $scope.oldProfileMessages = [];
+                                            $scope.tmpNewMessages = [];
+                                            $scope.tmpOldMessages = [];
+                                            $scope.originalOldProfileMessages = [];
+                                            $scope.originalProfileMessages = [];
+
+
+                                            $scope.selectedScope.key = 'USER';
                                             $scope.selectScope();
                                             $scope.selectGroup($scope.selectedNode);
                                             Notification.success({

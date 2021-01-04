@@ -252,6 +252,13 @@
           </tab-heading>
           <div ng-include="'views/cb/auto/vocabulary.html'"></div>
         </tab>
+        <tab ng-if="isAuthenticated()  && isReportSavingSupported() && cb.selectedTestCase.type==='TestStep' && cb.selectedTestCase.testingType==='SUT_MANUAL' && cb.selectedTestCase.testingType==='SUT_MANUAL' && cb.selectedTestCase.testingType==='TA_MANUAL' && cb.selectedTestCase.testingType==='MANUAL'" select="setActiveTab(4)" active="tabs[4]">
+         <tab-heading>
+           <i class="fa fa-book"></i>
+           Saved Test Step Reports ({{cb.savedReports.length}})
+         </tab-heading>
+         <div ng-include="'views/cb/savedReports.html'"></div>
+       </tab>
 
         <!--<tab active="tabs[10]" select="setTestStepExecutionTab(10)"-->
         <!--ng-show="testStep.testingType ===  'SUT_MANUAL' || testStep.testingType ===  'TA_MANUAL'">-->

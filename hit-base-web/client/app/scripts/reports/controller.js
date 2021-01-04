@@ -152,30 +152,34 @@ angular.module('reports')
 angular.module('reports').controller('ReportDetailsCtrl', function ($scope, $modalInstance,report,ReportService) {
 	  $scope.report =report;
 	  $scope.type = $scope.report.type;
+	  $scope.loading = true;
 	  if ($scope.report.type === 'TESTSTEP'){
-		  ReportService.getUserTSReport($scope.report.id).then(function (fullReport) {
-              $scope.reportItem = fullReport;
+		  ReportService.getUserTSReportHTML($scope.report.id).then(function (fullReport) {			  
+			  $scope.reportItem = fullReport;			  
           }, function (error) {
-              $scope.loadingAll = false;
               Notification.error({
        			 message: "Report could not be loaded! <br>If error persists, please contact the website administrator." ,
                  templateUrl: "NotificationErrorTemplate.html",
                  scope: $rootScope,
                  delay: 10000
                });
-          });
+          }).finally(function () {
+  			$scope.loading = false;
+      	});
 	  }if ($scope.report.type === 'TESTCASE'){
 		  ReportService.getUserTCReport($scope.report.id).then(function (fullReport) {
 			  $scope.reportItem = fullReport;
           }, function (error) {
-              $scope.loadingAll = false;
               Notification.error({
             	  message: "Report could not be loaded! <br>If error persists, please contact the website administrator." ,
                   templateUrl: "NotificationErrorTemplate.html",
                   scope: $rootScope,
                   delay: 10000
                 });
-          });
+          }).finally(function () {
+  			$scope.loading = false;
+      	});
+
 	  }
 
 	  $scope.close = function () {

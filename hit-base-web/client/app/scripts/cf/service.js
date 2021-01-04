@@ -21,28 +21,25 @@ angular.module('cf').factory('CF',
 
 
 
-angular.module('cf').factory('CFTestPlanExecutioner', ['$q', '$http', '$rootScope', 'CacheFactory',
-	function ($q, $http, $rootScope, CacheFactory) {
+angular.module('cf').factory('CFTestPlanExecutioner', ['$q', '$http', '$rootScope', 'CacheFactory','$localForage',
+	function ($q, $http, $rootScope, CacheFactory,$localForage) {
 	var manager = {
 			getTestPlan:  function (id) {
 				var delay = $q.defer();
 
-				if (!CacheFactory.get($rootScope.appInfo.name)) {
-					CacheFactory.createCache($rootScope.appInfo.name, {
-						storageMode: 'localStorage'
-					});
-				}			
-				var cache = CacheFactory.get($rootScope.appInfo.name);
 
-				$http.get("api/cf/testplans/" + id+"/updateDate", { timeout: 180000}).then(
+
+				$http.get("api/cf/testplans/" + id +"/updateDate", { timeout: 180000}).then(
 						function (date) {	
-							var cacheData = cache.get("api/cf/testplans/" + id);
-							if (cacheData && cacheData.updateDate === date.data) {
-								delay.resolve(cache.get("api/cf/testplans/" + id));
-							} else {
-								$http.get("api/cf/testplans/" + id, {timeout: 180000}).then(
+							$localForage.getItem("api/cf/testplans/" + id,true).then(function(data) {
+								//cache found
+					            var cacheData = data;
+					            if (cacheData && cacheData.updateDate === date.data) {
+									delay.resolve(data);
+								} else {							
+									$http.get("api/cf/testplans/" + id, {timeout: 180000}).then(
 										function (object) {
-											cache.put("api/cf/testplans/" + id,angular.fromJson(object.data));
+											$localForage.setItem("api/cf/testplans/" + id,angular.fromJson(object.data)).then(function() {});
 											delay.resolve(angular.fromJson(object.data));
 										},
 										function (response) {
@@ -50,10 +47,29 @@ angular.module('cf').factory('CFTestPlanExecutioner', ['$q', '$http', '$rootScop
 										}
 								);
 							}
-
+							 },function(error){
+                      //no cache found
+						        	$http.get("api/cf/testplans/" + id, { timeout: 180000}).then(
+						        			function (object) {	
+						        				$localForage.setItem("api/cf/testplans/" + id,angular.fromJson(object.data)).then(function() {});
+						        				delay.resolve(angular.fromJson(object.data));
+						        			},
+						        			function (response) {
+						        				delay.reject(response.data);
+						        			}
+						        	);
+						        });
 						},
 						function (error) {
-							delay.reject(error.data);
+							$http.get("api/cf/testplans/" + id, { timeout: 180000}).then(
+				        			function (object) {	
+				        				$localForage.setItem("api/cf/testplans/" + id,angular.fromJson(object.data)).then(function() {});
+				        				delay.resolve(angular.fromJson(object.data));
+				        			},
+				        			function (response) {
+				        				delay.reject(response.data);
+				        			}
+				        	);
 						}
 				);
 				return delay.promise;

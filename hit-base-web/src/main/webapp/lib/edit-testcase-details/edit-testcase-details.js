@@ -650,7 +650,7 @@
                         $scope.$broadcast(exampleMsgId, exampleMessage, testContext.format, testCase.name);
                     }
                 }
-                TestCaseDetailsService.details(testCase.type, testCase.id).then(function (result) {
+                TestCaseDetailsService.details(testCase.stage,testCase.type, testCase.id).then(function (result) {
                     $scope.testCase['testStory'] = result['testStory'];
                     $scope.testCase['jurorDocument'] = result['jurorDocument'];
                     $scope.testCase['testDataSpecification'] = result['testDataSpecification'];

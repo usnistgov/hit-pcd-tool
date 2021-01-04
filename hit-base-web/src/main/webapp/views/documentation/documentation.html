@@ -345,7 +345,8 @@
 
     <td>
       <div ng-if="node.title === 'Context-free' || node.title === 'Context-based'">
-        <a  class="point" title="Download Complete Example messages (.zip)"
+		<span ng-if="!node.exMsgPresent">-</span>
+        <a  class="point" ng-if="node.exMsgPresent" title="Download Complete Example messages (.zip)"
                  ng-click="downloadExampleMessages(node.stage)">
           <i class="fa fa-download fa-fw"></i>
         </a>

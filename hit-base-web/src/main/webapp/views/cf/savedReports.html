@@ -19,18 +19,19 @@ body {
 				<div class="col-md-3">
 					<div class="list-group">
 					
-					<table st-table="tmpReports" st-safe-src="cf.savedReports" class="table table-bordered table-striped">
+					<table st-table="tmpReports" st-safe-src="cf.savedReports" class="table table-bordered">
 						<thead class="text-primary">				        
-				        <tr>	
+				        <tr style="background-color: #3276B2;color: white">	
 				        	<th st-sort="creationDate" st-sort-default="reverse" st-skip-natural="true">Creation Date</th>
 				            <th st-sort="result" st-skip-natural="true" style="max-width: 150px">Validation result</th>	
 				            <th>Actions</th>				            
 				        </tr>
 		        
-		        </thead>									
-					<tr ng-repeat="child in tmpReports" class="point" ng-click="selectReport(child);">		         					                    
-		                    <td>{{child.creationDate | date:'MM/dd/yyyy HH:mm:ss'}}</td>                   
-		                    <td>
+				</thead>					
+						
+					<tr ng-class="{reportrowselected: cf.selectedSavedReport.id === child.id}" class="reportrow" ng-repeat="child in tmpReports" class="point">		         					                    
+		                    <td ng-click="selectReport(child);">{{child.creationDate | date:'MM/dd/yyyy HH:mm:ss'}}</td>                   
+		                    <td ng-click="selectReport(child);">
 		                    	<span ng-if="child.result==='PASSED'|| child.result==='PASSED_NOTABLE_EXCEPTION'"><span class="label label-success"><i class="fa fa-check"></i></span>{{child.result}}</span>
 		                    	<span ng-if="child.result==='FAILED'|| child.result==='FAILED_NOT_SUPPORTED'"><span class="label label-danger"><i class="fa fa-times"></i></span>{{child.result}}</span>
 		                    	<span ng-if="child.result==='INCOMPLETE'|| child.result==='INCONCLUSIVE' || child.result==='INPROGRESS'">{{child.result}}</span>
@@ -44,9 +45,11 @@ body {
 				</div>
 
 				<div class="col-md-9">
-				
-					<div ng-show="cf.selectedSavedReport != null">
-					<div class="btn-group" style="padding-bottom:10px">
+					<div ng-show="loading" style="text-align:center">
+				    	<i class="fa fa-circle-o-notch fa-spin fa-3x"></i>
+					</div>
+					<div ng-show="cf.selectedSavedReport != null && !loading">
+						<div class="btn-group" style="padding-bottom:10px">
                             <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="fa fa-download"></i> Download As <span class="caret"></span>
                             </button>

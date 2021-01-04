@@ -42,7 +42,7 @@
                             </ul>
                         </div>
 
-						<button ng-disabled="saveButtonDisabled" ng-if="isReportSavingSupported() && isAuthenticated() && testType ==='TestStep'" title="Save Report" type="button" class="btn btn-sm btn-success"
+						<button ng-disabled="saveButtonDisabled || !isTestStepCompleted()" ng-if="isReportSavingSupported() && isAuthenticated() && testType ==='TestStep'" title="Save Report" type="button" class="btn btn-sm btn-success"
                                         ng-click="savereport()">
                                     <i class="fa fa-check-circle"></i>
                                     {{saveButtonText}}

@@ -426,6 +426,10 @@
                            <button ng-show="testcase.scope === 'USER' && testcase.type =='TestPlan' && (isAdmin() || isPublisher())" type="button" class="btn btn-md btn-primary" ng-click="publishGroup()" ng-disabled="tsForm.$invalid || loading">
                         <i class="fa fa-paper-plane"></i> Make Public
                       </button>
+                      
+                      <button ng-show="testcase.scope === 'GLOBAL' && testcase.type =='TestPlan' && (isAdmin() || isPublisher())" type="button" class="btn btn-md btn-primary" ng-click="unPublishGroup()" ng-disabled="tsForm.$invalid || loading">
+                        <i class="fa fa-paper-plane"></i> Make Private
+                      </button>
 
                       <button ng-show="testcase.scope === 'GLOBAL' && testcase.type =='TestPlan' && (isAdmin() || isPublisher())" type="button" class="btn btn-md btn-primary" ng-click="unPublishGroup()" ng-disabled="tsForm.$invalid || loading">
                         <i class="fa fa-paper-plane"></i> Make Private

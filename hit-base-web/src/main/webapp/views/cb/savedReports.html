@@ -1,0 +1,86 @@
+<style id="antiClickjack">
+body {
+	display: none !important;
+}
+</style>
+<script type="text/javascript">
+	if (self === top) {
+		var antiClickjack = document.getElementById("antiClickjack");
+		antiClickjack.parentNode.removeChild(antiClickjack);
+	} else {
+		top.location = self.location;
+	}
+</script>
+<div ng-controller="CBSavedReportCtrl">
+
+	<div class="panel panel-info">
+		<div class="panel-body">
+			<div class="row">
+				<div class="col-md-3">
+					<div class="list-group">
+					
+					<table st-table="tmpReports" st-safe-src="cb.savedReports" class="table table-bordered">
+						<thead class="text-primary">				        
+				        <tr style="background-color: #3276B2;color: white">	
+				        	<th st-sort="creationDate" st-sort-default="reverse" st-skip-natural="true">Creation Date</th>
+				            <th st-sort="result" st-skip-natural="true" style="max-width: 150px">Validation result</th>	
+				            <th>Actions</th>				            
+				        </tr>
+		        
+		        </thead>									
+					<tr class="reportrow" ng-repeat="child in tmpReports" class="point">		         					                    
+		                    <td ng-click="selectReport(child);">{{child.creationDate | date:'MM/dd/yyyy HH:mm:ss'}}</td>                   
+		                    <td ng-click="selectReport(child);">
+		                    	<span ng-if="child.result==='PASSED'|| child.result==='PASSED_NOTABLE_EXCEPTION'"><span class="label label-success"><i class="fa fa-check"></i></span>{{child.result}}</span>
+		                    	<span ng-if="child.result==='FAILED'|| child.result==='FAILED_NOT_SUPPORTED'"><span class="label label-danger"><i class="fa fa-times"></i></span>{{child.result}}</span>
+		                    	<span ng-if="child.result==='INCOMPLETE'|| child.result==='INCONCLUSIVE' || child.result==='INPROGRESS'">{{child.result}}</span>
+		                    </td>
+		                    <td style="text-align:center">
+						        <button class="btn btn-xs btn-danger" title="Delete repoort" ng-click="deleteReport(child)"><i class="fa fa-trash"></i></button>
+						     </td>
+					</tr>    
+					</table>   
+					</div>
+				</div>
+
+				<div class="col-md-9">
+									<div ng-show="loading" style="text-align:center">
+				    	<i class="fa fa-circle-o-notch fa-spin fa-3x"></i>
+					</div>	
+					<div ng-show="cb.selectedSavedReport != null && !loading">
+						<div class="btn-group" style="padding-bottom:10px">
+	                            <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+	                                <i class="fa fa-download"></i> Download As <span class="caret"></span>
+	                            </button>
+	                            <ul class="dropdown-menu">
+	                                <li> <a class="point" ng-click="downloadAs('PDF')"><img src="images/pdf.png" style="height:15px;width:15px">PDF</a></li>
+	                                <li><a class="point" ng-click="downloadAs('XML')"><img src="images/xml.jpeg" style="height:15px;width:15px">XML</a></li>
+	                                <li> <a class="point" ng-click="downloadAs('HTML')"><img src="images/html.png" style="height:15;width:15px">HTML</a></li>
+	                            </ul>
+	                        </div>				
+						<div ng-show="cb.selectedSavedReport != null && cb.selectedSavedReport.html != null" ng-bind-html="toHTML(cb.selectedSavedReport.html)"></div>
+	            	</div>
+
+	            </div>
+
+
+			</div>
+		</div>
+
+	</div>
+</div>
+
+<script type="text/ng-template" id="confirmReportDelete.html">
+<div class="modal-header" style="background: lightgray">
+<h3 class="modal-title"  id="modal-title">Deletion Confirmation</h3>
+</div>
+<div class="modal-body">
+<div class="row">
+ Are you sure you want to delete this report?
+</div>
+</div>
+<div class="modal-footer">
+<button ng-click="cancel()"  class="btn btn-default btn-md"><i class="fa fa-times"></i>Cancel</button>
+<button ng-click="confirm()"  class="btn btn-danger btn-md"><i class="fa fa-trash"></i>Delete</button>
+</div>
+</script>

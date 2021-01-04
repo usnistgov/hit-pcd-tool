@@ -52,6 +52,9 @@ angular.module('commonServices').factory('StorageService',
           TEST_STEP_MESSAGE_TREES_KEY:'testStepMessageTrees',
           TEST_STEP_VALIDATION_RESULTS_KEY:'testStepValidationResults',
           TEST_STEP_EXECUTION_STATUSES_KEY:'testStepExecutionStatuses',
+          TEST_CASE_EXECUTION_STATUSES_KEY:'testCaseExecutionStatuses',
+          TEST_CASE_VALIDATION_RESULTS_KEY:'testCaseValidationResults',
+
 
           remove: function (key) {
                 return localStorageService.remove(key);
