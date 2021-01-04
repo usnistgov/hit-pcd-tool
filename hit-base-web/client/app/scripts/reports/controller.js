@@ -33,7 +33,7 @@ angular.module('reports')
                 $scope.contextType = "*";
                 $scope.resultType = "*";
                 $scope.filterBy();
-                $scope.loadingAll = false;
+				$scope.loadingAll = false;				
             }, function (error) {
                 $scope.loadingAll = false;
                 $scope.error = "Sorry, Cannot load the reports. Please try again. \n DEBUG:" + error;
