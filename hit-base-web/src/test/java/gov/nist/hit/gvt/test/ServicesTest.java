@@ -1,13 +1,9 @@
 package gov.nist.hit.gvt.test;
 
-import static org.junit.Assert.assertNotNull;
-
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import gov.nist.hit.core.domain.TestPlan;
-import gov.nist.hit.core.domain.TestStep;
 import gov.nist.hit.core.service.TestPlanService;
 import gov.nist.hit.core.service.TestStepService;
 

@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('main').controller('MainCtrl',
-    function ($scope, $rootScope, i18n, $location, userInfoService, $modal, $filter, base64, $http, Idle, Notification, IdleService, StorageService, TestingSettings, Session, AppInfo, User, $templateCache, $window, $sce, DomainsManager, Transport, $timeout, CBTestPlanListLoader,CBTestPlanLoader,CachingService) {
+    function ($scope, $rootScope, i18n, $location, userInfoService, $modal, $filter, base64, $http, Idle, Notification, IdleService, StorageService, TestingSettings, Session, AppInfo, User, $templateCache, $window, $sce, DomainsManager, Transport, $timeout, CBTestPlanListLoader,CBTestPlanLoader,CachingService,$localForage) {
         //This line fetches the info from the server if the user is currently logged in.
         //If success, the app is updated according to the role.
         $rootScope.loginDialog = null;
@@ -258,7 +258,7 @@ angular.module('main').controller('MainCtrl',
             });
         };
         
-        scope.$on('Keepalive', function () {
+        $scope.$on('Keepalive', function () {
             IdleService.keepAlive().then(function (result) {
                 $scope.rawNotifications = angular.copy(result);
                 $scope.updateNotifications(result);

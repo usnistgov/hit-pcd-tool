@@ -1602,7 +1602,7 @@ angular.module('format').factory('TestExecutionClock', function ($interval, Cloc
 });
 
 
-angular.module('format').factory('ServiceDelegator', function (HL7V2MessageValidator, EDIMessageValidator, XMLMessageValidator, HL7V2MessageParser, EDIMessageParser, XMLMessageParser, HL7V2CursorService, HL7V2EditorService, HL7V2TreeService, EDICursorService, EDIEditorService, EDITreeService, XMLCursorService, XMLEditorService, XMLTreeService, DefaultMessageValidator, DefaultMessageParser, DefaultCursorService, DefaultEditorService, DefaultTreeService, XMLCursor, EDICursor, HL7V2Cursor, DefaultCursor, XMLEditor, EDIEditor, HL7V2Editor, DefaultEditor) {
+angular.module('format').factory('ServiceDelegator', function (HL7V2MessageValidator, EDIMessageValidator, XMLMessageValidator, HL7V2MessageParser, EDIMessageParser, XMLMessageParser, HL7V2CursorService, HL7V2EditorService, HL7V2TreeService, EDICursorService, EDIEditorService, EDITreeService, XMLCursorService, XMLEditorService, XMLTreeService, DefaultMessageValidator, DefaultMessageParser, DefaultCursorService, DefaultEditorService, DefaultTreeService, XMLCursor, EDICursor, HL7V2Cursor, DefaultCursor, XMLEditor, EDIEditor, HL7V2Editor, DefaultEditor, WCTPMessageValidator, WCTPMessageParser, WCTPCursorService, WCTPEditorService, WCTPTreeService, WCTPCursor, WCTPEditor) {
     return {
         getMessageValidator: function (format) {
             if (format === 'hl7v2') {
@@ -1611,6 +1611,8 @@ angular.module('format').factory('ServiceDelegator', function (HL7V2MessageValid
                 return XMLMessageValidator;
             } else if (format === 'edi') {
                 return EDIMessageValidator;
+            }else if (format === 'wctp') {
+                return WCTPMessageValidator;
             }
             return DefaultMessageValidator;
         },
@@ -1621,6 +1623,8 @@ angular.module('format').factory('ServiceDelegator', function (HL7V2MessageValid
                 return XMLMessageParser;
             } else if (format === 'edi') {
                 return EDIMessageParser;
+            }else if (format === 'wctp') {
+                return WCTPMessageParser;
             }
             return DefaultMessageParser;
         },
@@ -1631,6 +1635,8 @@ angular.module('format').factory('ServiceDelegator', function (HL7V2MessageValid
                 return "xml";
             } else if (format === 'edi') {
                 return "edi";
+            }else if (format === 'wctp') {
+                return "wctp";
             }
             return "default";
         },
@@ -1651,6 +1657,8 @@ angular.module('format').factory('ServiceDelegator', function (HL7V2MessageValid
                 return XMLCursorService;
             } else if (format === 'edi') {
                 return EDICursorService;
+            }else if (format === 'wctp') {
+                return WCTPCursorService;
             }
             return DefaultCursorService;
         },
@@ -1661,6 +1669,8 @@ angular.module('format').factory('ServiceDelegator', function (HL7V2MessageValid
                 return XMLEditorService;
             } else if (format === 'edi') {
                 return EDIEditorService;
+            }else if (format === 'wctp') {
+                return WCTPEditorService;
             }
             return DefaultEditorService;
         },
@@ -1671,6 +1681,8 @@ angular.module('format').factory('ServiceDelegator', function (HL7V2MessageValid
                 return XMLTreeService;
             } else if (format === 'edi') {
                 return EDITreeService;
+            }else if (format === 'wctp') {
+                return WCTPTreeService;
             }
             return DefaultTreeService;
         },
@@ -1681,6 +1693,8 @@ angular.module('format').factory('ServiceDelegator', function (HL7V2MessageValid
                 return XMLCursor;
             } else if (format === 'edi') {
                 return EDICursor;
+            }else if (format === 'wctp') {
+                return WCTPCursor;
             }
             return DefaultCursor;
         },
@@ -1691,6 +1705,8 @@ angular.module('format').factory('ServiceDelegator', function (HL7V2MessageValid
                 return XMLEditor;
             } else if (format === 'edi') {
                 return EDIEditor;
+            }else if (format === 'wctp') {
+                return WCTPEditor;
             }
             return DefaultEditor;
         }
