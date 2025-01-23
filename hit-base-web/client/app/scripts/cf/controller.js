@@ -772,18 +772,16 @@ angular.module('cf').controller('CFReportCtrl', ['$scope', '$sce', '$http', 'CF'
 angular.module('cf').controller('CFSavedReportCtrl', ['$scope', '$sce', '$http', 'CF','ReportService','$modal', function ($scope, $sce, $http, CF,ReportService,$modal) {
 	$scope.cf = CF;
 	$scope.selectReport = function (report) {
-        $scope.loading = true;			
-		ReportService.getUserTSReportHTML(report.id).then(function (report) {
-
+            $scope.loading = true;			
+			ReportService.getUserTSReportHTML(report.id).then(function (report) {
             	if (report !== null){
             		$scope.cf.selectedSavedReport = report;
             	}                           
             }, function (error) {    
                 $scope.error = "Sorry, Cannot load the report data. Please try again. \n DEBUG:" + error;                            
             }).finally(function () {
-    			$scope.loading = false;
-        	});
-
+			$scope.loading = false;
+    	});
      };
      
       $scope.downloadAs = function (format) {
@@ -2247,6 +2245,40 @@ angular.module('cf')
                 }
             }]
         });
+        
+        var valueSetBindingsUploader = $scope.valueSetBindingsUploader = new FileUploader({
+            url: 'api/cf/hl7v2/management/uploadValueSetBindings',
+            autoUpload: false,
+            filters: [{
+                name: 'xmlFilter',
+                fn: function (item) {
+                    return /\/(xml)$/.test(item.type);
+                }
+            }]
+        });
+        
+        var coConstraintsUploader = $scope.coConstraintsUploader = new FileUploader({
+            url: 'api/cf/hl7v2/management/uploadCoConstraints',
+            autoUpload: false,
+            filters: [{
+                name: 'xmlFilter',
+                fn: function (item) {
+                    return /\/(xml)$/.test(item.type);
+                }
+            }]
+        });
+        
+         var slicingsUploader = $scope.slicingsUploader = new FileUploader({
+            url: 'api/cf/hl7v2/management/uploadSlicings',
+            autoUpload: false,
+            filters: [{
+                name: 'xmlFilter',
+                fn: function (item) {
+                    return /\/(xml)$/.test(item.type);
+                }
+            }]
+        });
+        
 
 
         var zipUploader = $scope.zipUploader = new FileUploader({
@@ -2269,6 +2301,22 @@ angular.module('cf')
                 delay: 10000
             });
             $scope.step = 1;
+        };
+
+
+        profileUploader.onCompleteItem = function (fileItem, response, status, headers) {
+
+            if (response.success == false) {
+                $scope.step = 1;
+                $scope.executionError.push(response.debugError);
+            } else {
+                $scope.profileUploadDone = true;
+                if ($scope.vsUploadDone === true && $scope.profileUploadDone === true && $scope.constraintsUploadDone === true) {
+                    $scope.validatefiles($scope.token);
+                }
+                $scope.profileMessagesTmp = response.profiles;
+
+            }
         };
 
         vsUploader.onCompleteItem = function (fileItem, response, status, headers) {
@@ -2296,20 +2344,44 @@ angular.module('cf')
             }
         };
 
-        profileUploader.onCompleteItem = function (fileItem, response, status, headers) {
+        
+        valueSetBindingsUploader.onCompleteItem = function (fileItem, response, status, headers) {
 
             if (response.success == false) {
                 $scope.step = 1;
                 $scope.executionError.push(response.debugError);
             } else {
-                $scope.profileUploadDone = true;
-                if ($scope.vsUploadDone === true && $scope.profileUploadDone === true && $scope.constraintsUploadDone === true) {
-                    $scope.validatefiles($scope.token);
-                }
-                $scope.profileMessagesTmp = response.profiles;
-
+                $scope.valueSetBindingsUploadDone = true;
+           //     if ($scope.vsUploadDone === true && $scope.profileUploadDone === true && $scope.constraintsUploadDone === true) {
+           //         $scope.validatefiles($scope.token);
+           //     }
             }
+        };
+        
+        coConstraintsUploader.onCompleteItem = function (fileItem, response, status, headers) {
 
+            if (response.success == false) {
+                $scope.step = 1;
+                $scope.executionError.push(response.debugError);
+            } else {
+                $scope.coConstraintsUploadDone = true;
+            //    if ($scope.vsUploadDone === true && $scope.profileUploadDone === true && $scope.constraintsUploadDone === true) {
+            //        $scope.validatefiles($scope.token);
+            //	  }
+            }
+        };
+        
+        slicingsUploader.onCompleteItem = function (fileItem, response, status, headers) {
+
+            if (response.success == false) {
+                $scope.step = 1;
+                $scope.executionError.push(response.debugError);
+            } else {
+                $scope.slicingsUploadDone = true;
+              //  if ($scope.vsUploadDone === true && $scope.profileUploadDone === true && $scope.constraintsUploadDone === true) {
+              //      $scope.validatefiles($scope.token);
+              //  }
+            }
         };
 
         profileUploader.onBeforeUploadItem = function (fileItem) {
@@ -2319,8 +2391,8 @@ angular.module('cf')
             }
             fileItem.formData.push({token: $scope.token});
             fileItem.formData.push({domain: $rootScope.domain.domain});
-
         };
+        
         constraintsUploader.onBeforeUploadItem = function (fileItem) {
             $scope.constraintValidationErrors = [];
             if ($scope.token == null) {
@@ -2337,7 +2409,30 @@ angular.module('cf')
             }
             fileItem.formData.push({token: $scope.token});
             fileItem.formData.push({domain: $rootScope.domain.domain});
-
+        };
+        valueSetBindingsUploader.onBeforeUploadItem = function (fileItem) {
+            $scope.valueSetBindingsValidationErrors = [];
+            if ($scope.token == null) {
+                $scope.token = $scope.generateUUID();
+            }
+            fileItem.formData.push({token: $scope.token});
+            fileItem.formData.push({domain: $rootScope.domain.domain});
+        };
+        coConstraintsUploader.onBeforeUploadItem = function (fileItem) {
+            $scope.coConstraintsValidationErrors = [];
+            if ($scope.token == null) {
+                $scope.token = $scope.generateUUID();
+            }
+            fileItem.formData.push({token: $scope.token});
+            fileItem.formData.push({domain: $rootScope.domain.domain});
+        };
+        slicingsUploader.onBeforeUploadItem = function (fileItem) {
+            $scope.slicingsValidationErrors = [];
+            if ($scope.token == null) {
+                $scope.token = $scope.generateUUID();
+            }
+            fileItem.formData.push({token: $scope.token});
+            fileItem.formData.push({domain: $rootScope.domain.domain});
         };
         zipUploader.onBeforeUploadItem = function (fileItem) {
 
@@ -2432,6 +2527,23 @@ angular.module('cf')
             }
         };
 
+		coConstraintsUploader.onAfterAddingAll = function (fileItem) {
+            if (coConstraintsUploader.queue.length > 1) {
+                coConstraintsUploader.removeFromQueue(0);
+            }
+        };
+        
+        slicingsUploader.onAfterAddingAll = function (fileItem) {
+            if (slicingsUploader.queue.length > 1) {
+                slicingsUploader.removeFromQueue(0);
+            }
+        };
+        
+        valueSetBindingsUploader.onAfterAddingAll = function (fileItem) {
+            if (valueSetBindingsUploader.queue.length > 1) {
+                valueSetBindingsUploader.removeFromQueue(0);
+            }
+        };
 
         $scope.getSelectedTestcases = function () {
             return $scope.profileMessages;
@@ -2481,14 +2593,25 @@ angular.module('cf')
             $scope.profileValidationErrors = [];
             $scope.valueSetValidationErrors = [];
             $scope.constraintValidationErrors = [];
+            $scope.valueSetBindingsValidationErrors = [];
+            $scope.coConstraintsValidationErrors = [];
+            $scope.slicingsValidationErrors = [];
             $scope.validationReport = "";
             $scope.executionError = [];
             $scope.profileUploadDone = false;
             $scope.vsUploadDone = false;
             $scope.constraintsUploadDone = false;
+            $scope.valueSetBindingsUploadDone = false;
+            $scope.coConstraintsUploadDone = false;
+            $scope.slicingsUploadDone = false;
+            
             vsUploader.uploadAll();
             constraintsUploader.uploadAll();
             profileUploader.uploadAll();
+            valueSetBindingsUploader.uploadAll();
+            coConstraintsUploader.uploadAll();
+            slicingsUploader.uploadAll();
+            
         };
 
         // zipUploader.onBeforeUploadItem = function (fileItem) {
@@ -2502,14 +2625,23 @@ angular.module('cf')
             $scope.profileValidationErrors = [];
             $scope.valueSetValidationErrors = [];
             $scope.constraintValidationErrors = [];
+            $scope.valueSetBindingsValidationErrors = [];
+            $scope.coConstraintsValidationErrors = [];
+            $scope.slicingsValidationErrors = [];
             $scope.validationReport = "";
             $scope.executionError = [];
             $scope.profileUploadDone = false;
             $scope.vsUploadDone = false;
             $scope.constraintsUploadDone = false;
+            $scope.valueSetBindingsUploadDone = false;
+            $scope.coConstraintsUploadDone = false;
+            $scope.slicingsUploadDone = false;
             profileUploader.clearQueue();
             vsUploader.clearQueue();
             constraintsUploader.clearQueue();
+            valueSetBindingsUploader.clearQueue();
+            coConstraintsUploader.clearQueue();
+            slicingsUploader.clearQueue();
         };
 
 //    $scope.dismissModal = function () {
@@ -2535,7 +2667,6 @@ angular.module('cf')
             if (profileUploader.queue.length > 0) {
                 numberOfactiveQueue++;
                 progress += profileUploader.progress;
-
             }
             if (vsUploader.queue.length > 0) {
                 numberOfactiveQueue++;
@@ -2544,6 +2675,18 @@ angular.module('cf')
             if (constraintsUploader.queue.length > 0) {
                 numberOfactiveQueue++;
                 progress += constraintsUploader.progress;
+            }
+            if (valueSetBindingsUploader.queue.length > 0) {
+                numberOfactiveQueue++;
+                progress += valueSetBindingsUploader.progress;
+            }
+            if (coConstraintsUploader.queue.length > 0) {
+                numberOfactiveQueue++;
+                progress += coConstraintsUploader.progress;
+            }
+            if (slicingsUploader.queue.length > 0) {
+                numberOfactiveQueue++;
+                progress += slicingsUploader.progress;
             }
             return (progress) / numberOfactiveQueue;
         };

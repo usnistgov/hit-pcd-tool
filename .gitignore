@@ -18,8 +18,4 @@ hit-base-web/client/node_modules
 hit-base-web/client/app/bower_components
 hit-base-web/client/.tmp
 hit-base-web/client/.sass-cache
-hit-base-web/src/test/java/gov/nist/hit/gvt/test/SendZipTest.java
-hit-base-web/src/test/resources/igamtZip.zip
-hit-base-web/src/test/resources/CNI.zip
-hit-base-web/src/test/resources/igamtZip-invalid.zip
-hit-base-web/src/test/resources/tcamtZip.zip
+hit-base-web/src/

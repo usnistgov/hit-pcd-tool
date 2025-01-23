@@ -52,5 +52,17 @@
 			</plugins>
 		</pluginManagement>
 	</build>
+	
+	<distributionManagement>
+		<repository>
+			<id>releases</id>
+			<url>https://hit-nexus.nist.gov/repository/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>snapshots</id>
+			<name>Internal Snapshots</name>
+			<url>https://hit-nexus.nist.gov/repository/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 </project>
