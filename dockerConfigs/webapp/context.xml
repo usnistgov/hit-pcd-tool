@@ -31,5 +31,6 @@ application -->
 
 	<Resources cacheMaxSize="512000" />
 
+	<CookieProcessor sameSiteCookies="strict" />
 
 </Context>
