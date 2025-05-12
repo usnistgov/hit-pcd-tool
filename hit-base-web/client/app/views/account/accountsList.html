@@ -34,25 +34,15 @@
             </th>
             <th st-sort="username" st-ratio="5">
               <div msg key='account.username'></div>
-            </th>
-
-            <th st-sort="employer" st-ratio="15" ng-if="isEmployerRequired()">
-              <div msg key='account.employer'></div>
-            </th>
-
+            </th>          
 
             <th st-sort="title" st-ratio="10">
-              <div msg key='account.title'></div>
+              <div msg key='account.authorities'></div>
             </th>
 
             <th st-sort="lastLoggedInDate" st-ratio="10">
               <div msg key='account.lastLoggedInDate'></div>
-            </th>
-
-
-            <th st-ratio="5">
-              <div msg key='account.type'></div>
-            </th>
+            </th>        
 
             <th st-ratio="10">
               <div msg key='account.registrationDate'></div>
@@ -69,25 +59,17 @@
             </th>
             <th  st-ratio="5" >
               <input st-search="username" placeholder="" class="input-sm form-control" type="search"/>
-            </th>
-
-            <th st-ratio="15"  ng-if="isEmployerRequired()">
-              <input st-search="employer" placeholder="" class="input-sm form-control" type="search"/>
-            </th>
+            </th>           
 
             <th st-ratio="10">
-              <input  st-search="title" placeholder="" class="input-sm form-control" type="search"/>
+              <input  st-search="authorities" placeholder="" class="input-sm form-control" type="search"/>
             </th>
-
 
             <th st-ratio="10" >
               <!--<input  st-search="lastLoggedInDate" placeholder="" class="input-sm form-control" type="search"/>-->
               <st-date-range predicate="lastLoggedInDate" before="loginDateQuery.before" after="loginDateQuery.after"></st-date-range>
             </th>
-
-            <th  st-ratio="5">
-              <input st-search="type" placeholder="" class="input-sm form-control" type="search"/>
-            </th>
+           
 
             <th  st-ratio="10" >
               <st-date-range predicate="registrationDate" before="registrationDateQuery.before" after="registrationDateQuery.after"></st-date-range>
@@ -113,26 +95,14 @@
             <td st-ratio="5">
               <span ng-show="!row.username">N/A</span>
               <span ng-show="row.username">{{::row.username}}</span>
-            </td>
-            <!--<td ng-bind="row.phone" st-ratio="10"></td>-->
-            <td st-ratio="15" ng-if="isEmployerRequired()">
-              <span ng-show="!row.username">N/A</span>
-              <span ng-show="row.username">{{::row.employer}}</span>
-            </td>
+            </td>           
             <td st-ratio="10" >
               <span ng-show="!row.username">N/A</span>
-              <span ng-show="row.username">{{::row.title}}</span>
+              <span ng-show="row.username"><span ng-repeat="a in row.authorities | orderBy:'toString()'">{{a}}<font ng-show="!$last">, </font></span>
             </td>
             <td st-ratio="10">
               {{::row.lastLoggedInDate | date:'MM/dd/yyyy HH:mm:ss'}}
-            </td>
-
-            <td st-ratio="5"><span ng-show="!row.username">Guest</span>
-              <span ng-show="row.username">
-                              {{row.accountType}}
-                          </span>
-            </td>
-
+            </td>          
             <td st-ratio="10">
               {{::row.registrationDate | date:'MM/dd/yyyy HH:mm:ss'}}
             </td>
@@ -242,7 +212,33 @@
       <h4 class="page-header">
         <div msg key="account.changeAccountTypeMessage"></div>
       </h4>
-      <div ng-form name="changeAccountTypeForm" class="form-horizontal" novalidate>
+            
+      <div class="authorities" >
+      <form name="changeAuthoritiesForm">
+		  <ul>
+		    <li ng-repeat="auth in authoritiesList">
+		      <label>
+		      <input type='checkbox' ng-checked="account.authorities.indexOf(auth) != -1" 
+		      ng-click="toggleCheck(auth)" ng-model="toto"/> {{auth}}</label>
+		    </li>		    
+		  </ul>
+		
+		 <div class="control-group form-group">
+          <div class="col-md-offset-2 col-md-7">
+            <button class="btn btn-primary" ng-click='saveAccountType()'>
+              <div msg key="account.changeAccountTypeButton"></div>
+            </button>
+          </div>
+        </div>
+        </form>
+		</div>
+		
+		
+      </div>
+      
+     
+      
+  <!--     <div ng-form name="changeAccountTypeForm" class="form-horizontal" novalidate>
         <div class="control-group form-group">
           <label class="control-label col-md-2">
             <div msg key='account.accountType'></div>
@@ -261,8 +257,9 @@
               <input type="radio" ng-model="account.accountType" value="admin"> Admin
             </label>
           </div>
-        </div>
-        <div class="control-group form-group">
+        </div> -->
+        
+       <!--  <div class="control-group form-group">
           <div class="col-md-offset-2 col-md-7">
             <button class="btn btn-primary" ng-click='saveAccountType()' ng-disabled='!changeAccountTypeForm.$valid'>
               <div msg key="account.changeAccountTypeButton"></div>
@@ -270,7 +267,7 @@
           </div>
         </div>
 
-      </div>
+      </div -->
 
 
       <h4>
@@ -314,6 +311,29 @@
     </button>
     <button class="btn btn-danger" ng-click="delete()"><span><i class="fa fa-trash-o fa-fw">&nbsp; </i><span msg
                                                                                                              key='manage.account.deleteModal.okButton'></span></span>
+    </button>
+  </div>
+</script>
+
+<script type="text/ng-template" id="ConfirmAccountDisableCtrl.html">
+  <div class="modal-header">
+    <h3 class="modal-title">
+      <div msg key='manage.account.disableModal.title'></div>
+    </h3>
+  </div>
+  <div class="modal-body">
+    <p>
+
+    <div msg key='manage.account.disableModal.msg'></div>
+    </p>
+  </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" ng-click="cancel()"><span><i class="fa fa-times fa-fw">&nbsp; </i><span msg
+                                                                                                            key='manage.account.disableModal.cancelButton'></span></span>
+    </button>
+    <button class="btn btn-danger" ng-click="disable()"><span><i class="fa fa-ban fa-fw">&nbsp; </i><span msg
+                                                                                                             key='manage.account.disableModal.okButton'></span></span>
     </button>
   </div>
 </script>

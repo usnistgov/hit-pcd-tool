@@ -20,7 +20,7 @@ body {
 				appInfo.options.ORGANIZATION_NAME != undefined ?
 				appInfo.options.ORGANIZATION_NAME: 'NIST'}} <span
 					style='color: white;'>{{appInfo.name}}</span><span
-					style='color: red; font-size: 12px'> {{appInfo.version}}</span>
+					style='color: red; font-size: 12px'> {{appInfo.version}}</span><span ng-if="isDevTool()" style='color:red; font-size:60px'>GVT DEV TOOL!</span>
 			</div>
 			<div id="appsubtitle">{{appInfo.subTitle}}</div>
 		</a> <span ng-if="isDomainSelectionSupported()"> <span
@@ -38,7 +38,7 @@ body {
 							ng-click='open=!open'>
 							<span class="caret"></span>
 						</button>
-						<ul class="dropdown-menu">
+						<ul class="dropdown-menu dropdown-menu-domain">
 							<li class="dropdown-header"
 								ng-if="domainsByOwner['my'].length > 0">My Tool Scopes</li>
 							<li ng-show="domainsByOwner['my'].length > 0"
@@ -72,7 +72,7 @@ body {
 							ng-click='open=!open'>
 							<span class="caret"></span>
 						</button>
-						<ul class="dropdown-menu">
+						<ul class="dropdown-menu dropdown-menu-domain">
 							<li ng-if="appInfo.domains.length > 0"
 								ng-click="appInfo.selectedDomain = dom.domain; selectDomain(appInfo.selectedDomain)"
 								ng-class="{'domain-selected': domain.domain === dom.domain, 'disabled': domain.domain === dom.domain}"
@@ -87,7 +87,7 @@ body {
 				<i class="fa fa-plus"></i>Create
 			</button>
 		</span>
-			
+
 
 		</span>
 	</div>
@@ -136,7 +136,7 @@ body {
 					Hello {{getUsername()}}<span class="caret"></span></a>
 				<ul class="dropdown-menu">
 					<li ng-class="isActive('/useraccount')"><a class="point"
-						href="#/useraccount"><i class="fa fa-user"></i> My Profile</a></li>
+						href="#/useraccount"><i class="fa fa-user"></i> My Profile <span ng-show="isAdmin()"> and Admin Tools</span></a></li>
 					<li role="separator" class="divider"></li>
 
 					<li ng-class="{'active':isActive('/transport')}"
@@ -144,7 +144,7 @@ body {
 							title="Transport Configuration"
 							class="label label-danger label-icon2">T</i> Transport Settings
 					</a></li>
-					<li role="separator" class="divider"></li>
+					<li ng-show="transportSupported" role="separator" class="divider"></li>
 					<li><a ng-click="showSettings()"><i class="fa fa-cog"></i>
 							Validation Settings</a></li>
 
@@ -157,12 +157,12 @@ body {
 
 					<li ng-if="isDomainsManagementSupported()" role="separator"
 						class="divider"></li>
-											
+
 					<li ng-if="isReportSavingSupported()" ng-class="isActive('/reports')"><a
 						class="point" href="#/reports"><i class="fa fa-cog"></i> My Validation Reports</a></li>
 					<li ng-if="isReportSavingSupported()" role="separator"
-						class="divider"></li>	
-						
+						class="divider"></li>
+
 					<li ng-show="isAdmin()" ng-class="isActive('/logs')"><a
 						class="point" href="#/logs"><i class="fa fa-cog"></i> Admin
 							Logs</a></li>

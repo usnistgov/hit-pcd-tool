@@ -61,6 +61,32 @@
           <!--<span ng-show="testPlans == null || testPlans.length  === 0">No Test Plan Found</span>-->
 
           <span class="pull-right">
+          
+          	<span ng-show="(selectedTestCase.type == 'TestPlan')">
+
+							 <button title="Refresh all test steps" ng-show="isAdmin()" type="button" class="btn btn-sm btn-info" ng-click="refreshTestPlanTestContextModels(selectedTestCase)">
+                                    <i class="fa fa-refresh"></i>Refresh all test steps
+                                </button>
+                               <button title="Manage API Keys" ng-show="true" type="button" class="btn btn-sm btn-success" ng-click="editAPIKeys(selectedTestCase)">
+                                    <i class="fa fa-pencil-square-o"></i>Manage API Keys
+                                </button>
+
+                                   <button title="Make Test Plan Public" ng-show="selectedTestCase.scope === 'USER'&& (isAdmin() || isPublisher())" type="button" class="btn btn-sm btn-success" ng-click="publishTestPlan(selectedTestCase)">
+                                    <i class="fa fa-paper-plane"></i>Make Public
+                                </button>
+
+                                  <button title="Make Test Plan Private" ng-show="selectedTestCase.scope === 'GLOBAL' && (isAdmin() || isPublisher())" type="button" class="btn btn-sm btn-success" ng-click="unpublishTestPlan(selectedTestCase)">
+                                    <i class="fa fa-paper-plane"></i>Make Private
+                                </button>
+
+
+
+                                     <button title="Delete Selected Test Category" type="button" class="btn btn-sm btn-danger" ng-click="deleteTestPlan(selectedTestCase)">
+                                    <i class="fa fa-trash"></i>Delete Test Plan
+                                </button>
+
+                               </span>
+          
                <button title="Upload File" type="button" class="btn btn-sm btn-info" ng-click="openUploadTestPlanModal()">
                                     <i class="fa fa-upload"></i>Upload Test Plan (.Zip)
                                 </button>
@@ -145,31 +171,7 @@
                 <span class="pull-right">
 
 
-                               <span ng-show="(selectedTestCase.type == 'TestPlan')">
-
-                               <!--<button title="Upload File"-->
-                                 <!--type="button"-->
-                                 <!--class="btn btn-xs btn-info"-->
-                                 <!--ng-show="(selectedTestCase.type == 'TestPlan')"-->
-                                 <!--ng-click="openUploadTestPlanModal()">-->
-                                 <!--<i class="fa fa-upload"></i>Upload Test Plan (.Zip)-->
-                                 <!--</button>-->
-
-                                   <button title="Make Test Plan Public" ng-show="selectedTestCase.scope === 'USER'&& (isAdmin() || isPublisher())" type="button" class="btn btn-xs btn-success" ng-click="publishTestPlan(selectedTestCase)">
-                                    <i class="fa fa-paper-plane"></i>Make Public
-                                </button>
-
-                                  <button title="Make Test Plan Private" ng-show="selectedTestCase.scope === 'GLOBAL' && (isAdmin() || isPublisher())" type="button" class="btn btn-xs btn-success" ng-click="unpublishTestPlan(selectedTestCase)">
-                                    <i class="fa fa-paper-plane"></i>Make Private
-                                </button>
-
-
-
-                                     <button title="Delete Selected Test Category" type="button" class="btn btn-xs btn-danger" ng-click="deleteTestPlan(selectedTestCase)">
-                                    <i class="fa fa-trash"></i>Delete Test Plan
-                                </button>
-
-                               </span>
+                               
 
 
                                                    <span ng-show="(selectedTestCase.type == 'TestCaseGroup')">

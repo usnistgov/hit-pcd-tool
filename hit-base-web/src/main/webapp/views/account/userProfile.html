@@ -105,16 +105,36 @@
         </div>
 
         <h3><div msg="" key="account.deleteSectionTitle"></div></h3>
-        <div ng-form="" name="deleteAccountForm" class="form-horizontal" novalidate="">
+        <div ng-form="" name="disableAccountForm" class="form-horizontal" novalidate="">
             <p>
-                <div msg="" key="account.deleteMessage"></div>
+                <div msg="" key="account.disableMessage"></div>
             </p>
             <div class="control-group form-group">
                 <div class="controls col-sm-10">
-                     <button class="btn btn-danger" ng-click="deleteAccount()"><div msg="" key="account.deleteButton"></div></button>
+                     <button class="btn btn-danger" ng-click="disableAccount()"><div msg="" key="account.disableButton"></div></button>
                 </div>
             </div>
         </div>
     </div>
   </div>
 </div>
+
+<script type="text/ng-template" id="ConfirmAccountDisableCtrl.html">
+  <div class="modal-header">
+    <h3 class="modal-title">
+      <div msg key='manage.account.disableModal.title'></div>
+    </h3>
+  </div>
+  <div class="modal-body">
+    <p>
+    <div msg key='manage.account.disableModal.msg'></div>
+    </p>
+  </div>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" ng-click="cancel()"><span><i class="fa fa-times fa-fw">&nbsp; </i><span msg key='manage.account.disableModal.cancelButton'></span></span>
+    </button>
+    <button class="btn btn-danger" ng-click="disable()"><span><i class="fa fa-ban fa-fw">&nbsp; </i><span msg key='manage.account.disableModal.okButton'></span></span>
+    </button>
+  </div>
+</script>

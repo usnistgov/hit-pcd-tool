@@ -24,18 +24,8 @@
             </button>
           </div>
 
-          <div class="form-group" ng-if="testPlans != null && testPlans.length > 0">
-            <label class="control-label" for="selectedTP">Profile Groups:</label>
-            <!--<div class="input-group">-->
-            <!--<ui-select search-enabled="false" style="display:inline-block; vertical-align:middle;" id="selectedTP" ng-model="selected.tp" theme="bootstrap" on-select="onSelectTestPlan($item)">-->
-            <!--<ui-select-match placeholder="Select a profile group...">{{$select.selected.name}}</ui-select-match>-->
-            <!--<ui-select-choices group-by="'category'" repeat="tp in testPlans">-->
-            <!--<span ng-bind-html="tp.name"></span>-->
-            <!--<br />-->
-            <!--<small ng-bind-html="tp.description"></small>-->
-            <!--</ui-select-choices>-->
-            <!--</ui-select>-->
-            <!--</div>-->
+          <div ng-class="{'disabledDiv':loadingTPs}" class="form-group" ng-if="testPlans != null && testPlans.length > 0">
+            <label class="control-label" for="selectedTP">Profile Groups:</label> 
 
             <select class="form-control input-sm test-plan-select" style="width:500px;background-color: white;"
                     name="selectedTP" id="selectedTP"

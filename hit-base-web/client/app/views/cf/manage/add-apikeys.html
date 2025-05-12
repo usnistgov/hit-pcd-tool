@@ -1,0 +1,61 @@
+<style id="antiClickjack">
+body {
+	display: none !important;
+}
+</style>
+<script type="text/javascript">
+	if (self === top) {
+		var antiClickjack = document.getElementById("antiClickjack");
+		antiClickjack.parentNode.removeChild(antiClickjack);
+	} else {
+		top.location = self.location;
+	}
+</script>
+
+<div style="margin: 10px">
+	<div class="modal-header">
+		<span style="font-weight: bold; font-size: 20px"> Code Set API
+			keys management - ADD</span> <span class="pull-right">
+			<button class="btn btn-xs btn-primary" ng-click="cancel()">
+				<i class="fa fa-times"></i>
+			</button>
+		</span>
+	</div>
+	<div class="modal-body" style="padding: 10px 0px 0px 0px;">
+
+		<div class="row">
+			<div class="col-md-12" style="min-height: 350px;">
+
+				<table class="table table-striped table-condensed table-bordered">
+					<thead class="">
+						<th style="max-width: 75px;">Binding identifier</th>
+						<th>URL</th>
+						<th>API KEY</th>
+					</thead>
+					<tbody>
+						<tr ng-repeat="item in externalVS">
+							<td>{{item.bindingIdentifier}}</td>
+							<td>{{item.url}}</td>
+							<td><input type="text" ng-model="item.apiKey"
+								style="width: 100%;"></td>
+						</tr>						
+					</tbody>
+				</table>
+
+			</div>
+		</div>
+
+
+	</div>
+	<div class="modal-footer">
+
+		<div class="pull-right">
+			<button type="button" class="btn btn-primary btn-md"
+				ng-click="save()">
+				<i class="fa fa-check"></i>DONE
+			</button>
+		</div>
+
+	</div>
+
+</div>

@@ -14,7 +14,7 @@
   <!--<li class="current"><a href="#/cb_testcase">Test Selection</a></li>-->
   <!--<li><a href="#/cb_execution">Test Execution</a></li>-->
   <!--</ul>-->
-
+{{loading}}
   <div ng-show="!loading">
     <div ng-show="error !== null">
       <div class="row">
@@ -50,7 +50,7 @@
                 <!--</option>-->
               <!--</select>-->
             </div>
-            <div class="form-group" ng-if="testPlans != null && testPlans.length > 0">
+            <div ng-class="{'disabledDiv':loadingTPs}" class="form-group" ng-if="testPlans != null && testPlans.length > 0">
               <label class="control-label" for="selectedTP">Test Plan: </label>
               <select class="form-control input-sm test-plan-select" style="width:500px;background-color: white" name="selectedTP" id="selectedTP" ng-change="selectTP()" ng-model="selectedTP.id">
                 <option value="">---- Select Test Plan ----</option>
@@ -106,13 +106,13 @@
 
                 <div>
 
-                  <div ng-show="!loadingTP">
+          <!--         <div ng-show="!loadingTP"> -->
 
                     <div ng-show="errorTP != null">
                       <div class="alert alert-danger" role="alert" ng-bind="errorTP"></div>
                     </div>
 
-                    <div ng-show="errorTP == null">
+                    <div ng-class="{'disabledDiv':loadingTP}" ng-show="errorTP == null">
                       <div ng-show="testCases != null && testCases.length > 0">
                         <testcase-tree tree-control="tree" icon-leaf="" is-selectable="isSelectable(branch)" on-select="selectTestCase(branch)"></testcase-tree>
                       </div>
@@ -120,11 +120,11 @@
                         No Test Case Available
                       </div>
                     </div>
-                  </div>
-
+                  <!-- </div> -->
+<!-- 
                   <div ng-show="loadingTP" style="text-align:center">
                     <i class="fa fa-circle-o-notch fa-spin fa-2x"></i>
-                  </div>
+                  </div> -->
 
                 </div>
 

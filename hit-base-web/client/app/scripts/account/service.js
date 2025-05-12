@@ -4,11 +4,36 @@
 
 'use strict';
 
-angular.module('account').factory('Account', ['$resource',
-    function ($resource) {
-        return $resource('api/accounts/:id', {id: '@id'});
-    }
-]);
+//angular.module('account').factory('notificationService', function ($http, $q) {
+   
+angular.module('account').factory('Account',  function ($http,$resource,$q) {
+		var accountService = function () { };
+		
+	 	accountService.disableAccount = function (id) {
+			//console.log("disable account "+id);
+			var delay = $q.defer();			
+			$http.post("api/accounts/"+id+"/disable").then(
+            function (object) {
+              //  var res = object.data != null && object.data != "" ? angular.fromJson(object.data) : null;
+              //  delay.resolve(res);
+            },
+            function (response) {
+                console.log("error");
+                delay.reject(response.data);
+            }
+	        );
+	        return delay.promise;
+		};
+		
+		
+		accountService.resource = function () {
+			return $resource('api/accounts/:id', {id: '@id'});
+		};
+        
+        
+        return accountService;
+    
+});
 
 angular.module('account').factory('LoginService', ['$resource', '$q',
     function ($resource, $q) {
@@ -29,7 +54,7 @@ angular.module('account').factory('AccountLoader', ['Account', '$q',
     function (Account, $q) {
         return function(acctID) {
             var delay = $q.defer();
-            Account.get({id: acctID},
+            Account.resource().get({id: acctID},
                 function(account) {
                     delay.resolve(account);
                 },
@@ -141,6 +166,58 @@ angular.module('account').factory('userLoaderService', ['userInfo', '$q',
     }
 ]);
 
+angular.module('account').factory('notificationService', function ($http, $q) {
+    var notificationService = function () { };
+
+    notificationService.saveNotification = function (notification) {
+        var delay = $q.defer();
+        var data = angular.fromJson(notification);
+        $http.post("api/notification/add", data).then(
+            function (object) {
+                var res = object.data != null && object.data != "" ? angular.fromJson(object.data) : null;
+                delay.resolve(res);
+            },
+            function (response) {
+                console.log("error");
+                delay.reject(response.data);
+            }
+        );
+        return delay.promise;
+    };
+
+    notificationService.updateNotification = function (notification) {
+        var delay = $q.defer();
+        var data = angular.fromJson(notification);
+        $http.post("api/notification/update", data).then(
+            function (object) {
+                var res = object.data != null && object.data != "" ? angular.fromJson(object.data) : null;
+                delay.resolve(res);
+            },
+            function (response) {
+                console.log("error");
+                delay.reject(response.data);
+            }
+        );
+        return delay.promise;
+    };
+
+    notificationService.getAllNotifications = function (notification) {
+        var delay = $q.defer();
+        $http.get("api/notification/all").then(
+            function (object) {
+                var res = object.data != null && object.data != "" ? angular.fromJson(object.data) : null;
+                delay.resolve(res);
+            },
+            function (response) {              
+                delay.reject(response.data);
+            }
+        );
+        return delay.promise;
+    };
+
+    return notificationService;
+});
+
 angular.module('account').factory('userInfoService', ['StorageService', 'userLoaderService','User','Transport','$q','$timeout','$rootScope',
     function(StorageService,userLoaderService,User,Transport,$q,$timeout,$rootScope) {
         var currentUser = null;
@@ -228,7 +305,7 @@ angular.module('account').factory('userInfoService', ['StorageService', 'userLoa
         };
 
         var isAdmin = function() {
-          if (!admin && currentUser != null  && $rootScope.appInfo.adminEmails != null && $rootScope.appInfo.adminEmails) {
+          if (!admin && currentUser != null && $rootScope.appInfo && $rootScope.appInfo.adminEmails != null && $rootScope.appInfo.adminEmails) {
             if (Array.isArray($rootScope.appInfo.adminEmails)) {
               admin = $rootScope.appInfo.adminEmails.indexOf(currentUser.email) >= 0;
             } else {
@@ -384,3 +461,121 @@ angular.module('account').factory('userInfoService', ['StorageService', 'userLoa
         };
     }
 ]);
+
+angular.module('account').factory('apikeysService', function($http, $q) {
+	var apikeysService = function() { };
+
+	apikeysService.getCBTestStepsWithExternalValueSets = function(scope,domain) {
+			var delay = $q.defer();
+			$http.get("api/cb/management/testStepsWithExternalValueSetsFromAllTestPlans", { timeout: 180000,params: {"scope": scope,"domain": domain} }).then(
+				function(testSteps) {
+					delay.resolve(angular.fromJson(testSteps.data));
+				},
+				function(response) {
+					delay.reject(response.data);
+				}
+			);
+
+			return delay.promise;
+		};
+	
+	apikeysService.getCBTestPlans = function(scope,domain) {
+			var delay = $q.defer();
+			$http.get("api/cb/management/testPlans", { timeout: 180000,params: {"scope": scope,"domain": domain} }).then(
+				function(testSteps) {
+					delay.resolve(angular.fromJson(testSteps.data));
+				},
+				function(response) {
+					delay.reject(response.data);
+				}
+			);
+
+			return delay.promise;
+		};
+		
+		apikeysService.getCFTestPlans = function(scope,domain) {
+				var delay = $q.defer();
+				$http.get("api/cf/management/testPlans", { timeout: 180000,params: {"scope": scope,"domain": domain} }).then(
+					function(testSteps) {
+						delay.resolve(angular.fromJson(testSteps.data));
+					},
+					function(response) {
+						delay.reject(response.data);
+					}
+				);
+
+				return delay.promise;
+			};
+
+	apikeysService.getCFTestStepsWithExternalValueSets = function(scope,domain) {
+			var delay = $q.defer();
+			$http.get("api/cf/management/testStepsWithExternalValueSetsFromAllTestPlans", { timeout: 180000,params: {"scope": scope,"domain": domain}}).then(
+				function(testSteps) {
+					delay.resolve(angular.fromJson(testSteps.data));
+				},
+				function(response) {
+					delay.reject(response.data);
+				}
+			);
+
+			return delay.promise;
+		};
+		
+		apikeysService.getCBTestStepsWithExternalValueSets = function (testPlanId) {
+			        var delay = $q.defer();
+			        $http.get("api/cb/management/testPlans/" + testPlanId+'/testStepsWithExternalValueSets', {timeout: 180000}).then(
+			          function (testSteps) {
+			            delay.resolve(angular.fromJson(testSteps.data));
+			          },
+			          function (response) {
+			            delay.reject(response.data);
+			          }
+			        );
+
+			        return delay.promise;
+			      },
+				  
+			apikeysService.getCFTestStepsWithExternalValueSets = function(testPlanId) {
+				var delay = $q.defer();
+				$http.get("api/cf/management/testPlans/" + testPlanId + '/testStepsWithExternalValueSets', { timeout: 180000 }).then(
+					function(testSteps) {
+						delay.resolve(angular.fromJson(testSteps.data));
+					},
+					function(response) {
+						delay.reject(response.data);
+					}
+				);
+
+				return delay.promise;
+			},
+
+		apikeysService.updateTestContextApiKeys = function(testContextId, apikeys) {
+			var delay = $q.defer();
+			$http.post('api/hl7v2/testcontext/' + testContextId + '/apikey', apikeys).then(
+				function(object) {
+					delay.resolve(angular.fromJson(object.data));
+				},
+				function(response) {
+					delay.reject(response.data);
+				}
+			);
+			return delay.promise;
+		};
+		
+		apikeysService.updateTestContextApiKeys =  function (testContextId,apikeys) {
+				         var delay = $q.defer();
+				         $http.post('api/hl7v2/testcontext/'+ testContextId + '/apikey', apikeys).then(
+				           function (object) {
+				             delay.resolve(angular.fromJson(object.data));
+				           },
+				           function (response) {
+				             delay.reject(response.data);
+				           }
+				         );
+				         return delay.promise;
+				    }
+
+
+
+	return apikeysService;
+});

@@ -1,0 +1,154 @@
+<style id="antiClickjack">
+body {
+	display: none !important;
+}
+</style>
+<script type="text/javascript">
+	if (self === top) {
+		var antiClickjack = document.getElementById("antiClickjack");
+		antiClickjack.parentNode.removeChild(antiClickjack);
+	} else {
+		top.location = self.location;
+	}
+</script>
+<div ng-controller="APIKeysCtrl" ng-init="loadAPIkeys()">
+
+	<div style="margin: 10px">
+		<div class="modal-header">
+			<span style="font-weight: bold; font-size: 20px"> Code Set API keys
+				management for Context Based tests</span>
+		</div>
+		<div class="modal-body" style="padding: 10px 0px 0px 0px">
+			<div class="row">
+				<div class="col-md-3" style="min-height: 350px">
+					<table class="table table-condensed table-bordered">
+						<thead class="tbl-header">
+							<th>Select a Test Plan</th>
+						</thead>
+						<tbody>
+							<tr class="testplanlist" ng-repeat="tp in CBtestplans"
+								ng-click="fetchCBTestStep(tp.id)">
+								<td>{{tp.name}}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+				<div class="col-md-9" style="min-height: 350px">
+					<div ng-show="loadingCB">
+					<i style="font-size: 50px;" class="fa fa-spinner fa-spin"></i>
+					</div>
+					<div ng-show="CBtestSteps && CBtestSteps.length>0 && !loadingCB">
+						<table class="table table-striped table-condensed table-bordered">
+							<thead class="">
+								<th width="20%" style="max-width: 75px">Binding identifier</th>
+								<th width="40%">URL</th>
+								<th width="40%">API KEY</th>
+							</thead>
+							<tbody ng-repeat="testStep in CBtestSteps | orderBy:'name'">
+								<tr>
+									<td colspan="3" style="font-weight: bold">{{ testStep.name }}</td>
+								</tr>
+								<tr
+									ng-repeat="apiKey in testStep.testContext.apikeys | orderBy:'bindingIdentifier	'">
+
+									<td>{{ apiKey.bindingIdentifier }}</td>
+									<td>{{ apiKey.bindingUrl}}</td>
+									<td><div style="display: flex; align-items: center;">
+											<input
+												ng-if="!apiKey.hasBindingKey || (apiKey.hasBindingKey && apiKey.editBindingKey)"
+												type="text" ng-model="apiKey.bindingKey" style="width: 100%"
+												ng-change="apiKey.editBindingKey = true"> <span
+												ng-if="apiKey.hasBindingKey && !apiKey.editBindingKey">***<span
+												ng-click="apiKey.editBindingKey = true" class="point fa fa-pencil"></span></span>
+											<span ng-if="apiKey.hasBindingKey && apiKey.editBindingKey"
+												ng-click="apiKey.editBindingKey = false" title="Revert changes"
+												class="point fa fa-repeat"></span>
+										</div></td>
+								</tr>
+							</tbody>
+						</table>
+
+						<div class="pull-right">
+							<button type="button" class="btn btn-primary btn-md" ng-click="saveCB()">
+								<i class="fa fa-check"></i>Save
+							</button>
+						</div>
+					</div>
+					<div ng-show="CBtestSteps && CBtestSteps.length == 0 && !loadingCB">
+						No external code set found.
+					</div>
+
+				</div>
+			</div>
+		</div>
+		<div class="modal-header">
+			<span style="font-weight: bold; font-size: 20px"> Code Set API keys
+				management for Context Free tests </span>
+		</div>
+		<div class="modal-body" style="padding: 10px 0px 0px 0px">
+			<div class="row">
+				<div class="col-md-3" style="min-height: 350px">
+					<table class="table table-condensed table-bordered">
+						<thead class="tbl-header">
+							<th>Select a Test Plan</th>
+						</thead>
+						<tbody>
+							<tr class="testplanlist" ng-repeat="tp in CFtestplans"
+								ng-click="fetchCFTestStep(tp.id)">
+								<td>{{tp.name}}</td>
+							</tr>
+						</tbody>
+					</table>
+
+				</div>
+				<div class="col-md-9" style="min-height: 350px">
+				<div ng-show="loadingCF">
+					<i style="font-size: 50px;" class="fa fa-spinner fa-spin"></i>
+					</div>
+					<div ng-show="CFtestSteps && CFtestSteps.length>0 && !loadingCF">
+						<table class="table table-striped table-condensed table-bordered">
+							<thead class="">
+								<th width="20%" style="max-width: 75px">Binding identifier</th>
+								<th width="40%">URL</th>
+								<th width="40%">API KEY</th>
+							</thead>
+							<tbody ng-repeat="testStep in CFtestSteps | orderBy:'name'">
+								<tr>
+									<td colspan="3" style="font-weight: bold">{{ testStep.name }}</td>
+								</tr>
+								<tr
+									ng-repeat="apiKey in testStep.testContext.apikeys | orderBy:'bindingIdentifier	'">
+
+									<td>{{ apiKey.bindingIdentifier }}</td>
+									<td>{{ apiKey.bindingUrl}}</td>
+									<td><div style="display: flex; align-items: center;">
+											<input
+												ng-if="!apiKey.hasBindingKey || (apiKey.hasBindingKey && apiKey.editBindingKey)"
+												type="text" ng-model="apiKey.bindingKey" style="width: 100%"
+												ng-change="apiKey.editBindingKey = true"> <span
+												ng-if="apiKey.hasBindingKey && !apiKey.editBindingKey">***<span
+												ng-click="apiKey.editBindingKey = true" class="point fa fa-pencil"></span></span>
+											<span ng-if="apiKey.hasBindingKey && apiKey.editBindingKey"
+												ng-click="apiKey.editBindingKey = false" title="Revert changes"
+												class="point fa fa-repeat"></span>
+										</div></td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="pull-right">
+						<button type="button" class="btn btn-primary btn-md" ng-click="saveCF()">
+							<i class="fa fa-check"></i>Save
+						</button>
+						</div>
+					</div>
+					<div ng-show="CFtestSteps && CFtestSteps.length == 0 && !loadingCF">
+						No external code set found.
+					</div>
+
+				</div>
+			</div>
+		</div>
+		<div class="modal-footer"></div>
+
+	</div>
+</div>

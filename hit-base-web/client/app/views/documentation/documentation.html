@@ -166,6 +166,8 @@
                     <a class="point"  ng-if="isLink(doc.path)" target="_blank"
                        ng-href="{{::doc.path}}">{{::doc.title}}</a>
                     <a class="point"  ng-if="!isLink(doc.path)" ng-click="downloadDocument(doc.path)">{{::doc.name}}</a>
+					<a class="point" title="Preview document" ng-if=" false || !isLink(doc.path) && doc.path.endsWith('.md')" ng-click="openMarkdownModal(doc)"><i class="fa fa-eye" aria-hidden="true"></i>
+
                     </span>
               </td>
               <td st-ratio="15">
@@ -257,27 +259,27 @@
       <!--{{::data.title}}-->
       <!--</accordion-heading>-->
 
-
-     <button ng-if="data.stage != 'CF'" title="Download Complete TestCase" type="button"
+<div class="col-md-12" style="padding-bottom: 5px;">
+     <button ng-if="anyTestPackageButton()"  title="Download Complete TestCase" type="button"
         class="btn btn-sm btn-info"
         ng-click="downloadCompleteTestPackage('CB')">
         <i class="fa fa-download"></i>
       	Download Complete TestPackage (.zip)
       </button>
 
-
-     <button title="Download Example Messages" type="button" class="btn btn-sm btn-info"
+<!--
+     <button  title="Download Example Messages" type="button" class="btn btn-sm btn-info"
               ng-click="downloadExampleMessages('CB')">
         <i class="fa fa-download"></i>
         Download Example Messages (.zip)
       </button>
+-->
+</div>
 
-
-      <br/>
-      <br/>
-
-
-      <div class="col-md-12">
+		<div ng-show="loading" class="col-md-12">
+		Loading test case documentation...
+		</div>
+      <div ng-show="!loading" class="col-md-12">
         <table tt-table tt-params="params"
                class="table table-striped table-bordered table-condensed">
           <thead>
@@ -292,7 +294,10 @@
             <th>Example Message</th>
             <th>Conformance Profile</th>
             <th>Constraints</th>
+			<th>CoConstraints</th>
             <th>ValueSet Library</th>
+			<th>ValueSet Bindings</th>
+			<th>Slicings</th>
           </tr>
           </thead>
           <tbody class=""></tbody>
@@ -334,7 +339,8 @@
 
     <td>
       <div ng-if="node.title === 'Context-based'">
-        <a  class="point"  class="point"  title="Download Complete TestCase (.zip)"
+		<span ng-if="!anyTestPackage(node)">-</span>
+        <a  ng-if="anyTestPackage(node)" class="point"  class="point"  title="Download Complete TestCase (.zip)"
                  ng-click="downloadCompleteTestPackage(node.stage)">
           <i class="fa fa-download fa-fw"></i>
         </a>
@@ -375,11 +381,30 @@
          class="point"  ng-click="downloadConstraints(node)"><i class="fa fa-download fa-fw"></i></a>
     </td>
 
+	<td>
+      <span ng-if="!node.xmlCoConstraintsPresent">-</span>
+      <a  class="point" ng-if="node.xmlCoConstraintsPresent"
+         class="point"  ng-click="downloadCoConstraints(node)"><i class="fa fa-download fa-fw"></i></a>
+    </td>
+
     <td>
       <span ng-if="!node.xmlValueSetLibraryPresent">-</span>
       <a  class="point" ng-if="node.xmlValueSetLibraryPresent"
          class="point"  ng-click="downloadValueSetLib(node)"><i class="fa fa-download fa-fw"></i></a>
     </td>
+
+	<td>
+      <span ng-if="!node.xmlValueSetBindingsPresent">-</span>
+      <a  class="point" ng-if="node.xmlValueSetBindingsPresent"
+         class="point"  ng-click="downloadValueSetBindings(node)"><i class="fa fa-download fa-fw"></i></a>
+    </td>
+
+	<td>
+      <span ng-if="!node.xmlSlicingsPresent">-</span>
+      <a  class="point" ng-if="node.xmlSlicingsPresent"
+         class="point"  ng-click="downloadSlicings(node)"><i class="fa fa-download fa-fw"></i></a>
+    </td>
+
 
 
   </tr>
@@ -524,6 +549,28 @@
 
       <div ng-if="docs.length > 0">
         <div class="col-md-12">
+			<table class="table table-striped table-bordered table-condensed">
+            	<thead>
+            		<tr class="tbl-header-1">
+              		<th st-ratio="50">Docker files</th>
+              		<th st-ratio="50">File Download link</th>             
+            </tr>
+            </thead>
+			<tbody>
+ 			<tr ng-repeat="doc in docsDocker | orderBy:'position'">
+				<td st-ratio="50">{{::doc.title}}</td>
+				 <td st-ratio="50">
+                <span ng-if="doc.path == null">-</span>
+                <span ng-if="doc.path != null">
+                    <a class="point"  ng-if="isLink(doc.path)" target="_blank"
+                       ng-href="{{::doc.path}}">{{::doc.title}}</a>
+                    <a class="point"  ng-if="!isLink(doc.path) " ng-click="downloadTool(doc.path)">{{::doc.name}}</a>
+					<a class="point" title="Preview document" ng-if=" false || !isLink(doc.path) && doc.path.endsWith('.md')" ng-click="openMarkdownModal(doc)"><i class="fa fa-eye" aria-hidden="true"></i>
+					</a>
+                    </span>
+              </td>				
+            </tbody>
+          </table>
           <table class="table table-striped table-bordered table-condensed">
             <thead>
             <tr class="tbl-header-1">
@@ -536,7 +583,6 @@
             </thead>
             <tbody>
             <tr ng-repeat="doc in docs | orderBy:'position'">
-
               <td st-ratio="40">{{::doc.title}}</td>
               <td st-ratio="25">
                 <span ng-if="doc.path == null">-</span>

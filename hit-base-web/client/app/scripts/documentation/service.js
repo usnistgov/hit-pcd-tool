@@ -87,7 +87,19 @@ angular.module('doc').factory('DocumentationManager', ['$q', '$http',
           }
         );
         return delay.promise;
-      }
+      },
+	  getDocumentContent: function (id) {
+          var delay = $q.defer();
+          $http.get('api/documentation/documents/' + id + '/content').then(
+            function (object) {
+              delay.resolve(object.data);
+            },
+            function (response) {
+              delay.reject(response.data);
+            }
+          );
+          return delay.promise;
+        }
 
 
 

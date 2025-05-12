@@ -14,8 +14,8 @@ body {
 <loading-testcases></loading-testcases>
 <div style="margin: 10px">
 	<div class="modal-header" class="upload-dlg-header">
-		<span style="font-weight: bold; font-size: 20px"> Upload
-			Profiles </span> <span class="pull-right">
+		<span style="font-weight: bold; font-size: 20px"> Upload Context Based
+			Resource Bundle </span> <span class="pull-right">
 			<button class="btn btn-xs btn-primary" ng-click="dismissModal()">
 				<i class="fa fa-times"></i>
 			</button>
@@ -29,13 +29,13 @@ body {
 						<div class="upload-drop-box" nv-file-over="" nv-file-drop=""
 							over-class="upload-drop-box-file-over" uploader="zipUploader">
 							<label class="btn btn-default btn-success"
-								style="width: 270px; text-align: left"> <i
-								class="fa fa-file" aria-hidden="true"></i> Browse Test Plan
-								(.zip) <input type="file" accept="application/zip"
-								nv-file-select="" uploader="zipUploader" style="display: none">
+								style="width: 270px; text-align: left"> <i class="fa fa-file"
+								aria-hidden="true"></i> Browse Test Plan (.zip) <input type="file"
+								accept="application/zip" nv-file-select="" uploader="zipUploader"
+								style="display: none">
 							</label> <br> <i ng-show="zipUploader.queue.length"> <span
-								ng-show="zipUploader.queue[0].isSuccess"><i
-									class="fa fa-check"></i></span> {{zipUploader.queue[0].file.name}}, {{
+								ng-show="zipUploader.queue[0].isSuccess"><i class="fa fa-check"></i></span>
+								{{zipUploader.queue[0].file.name}}, {{
 								zipUploader.queue[0].file.size/1024/1024|number:2 }} MB
 							</i>
 
@@ -55,42 +55,67 @@ body {
 
 
 			<div class="col-md-12" ng-show="step == 1">
-				<div class="row" style="padding-bottom: 10px;">
+				<div ng-show="validationReports && validationReports.length > 0" class="row">
 					<div class="col-md-12">
-						<div class="pull-left">
-							<button type="button" class="btn btn-primary btn-md"
-								ng-click="step = 0">
-								<i class="fa fa-arrow-left"></i> Back
-							</button>
+						<accordion close-others="true" ng-show="error != null && error != ''">
+						<accordion-group is-open="true" panel-class="panel-danger">
+						<accordion-heading> <i style="font-size: 20px"
+							class="fa fa-exclamation-triangle" aria-hidden="true"></i> Profile and
+						validation artifacts verification reports</accordion-heading>
+						<div class="row"
+							style="padding-bottom: 5px; padding-left: 20px; padding-right: 20px;">
+							<div class="col-xs-4">
+								<button ng-if="validationReports.length > 1 && currentIndex >0 " type="button"
+									class="btn btn-primary btn-md" ng-click="goBack()">
+									<i class="fa fa-arrow-left"></i>Previous Report
+								</button>
+							</div>
+							<div class="col-xs-4" style="text-align: center;">Report
+								#{{currentIndex+1}}/{{validationReports.length}}</div>
+							<div class="col-xs-4">
+								<button ng-if="validationReports.length > 1 && currentIndex < validationReports.length-1" type="button"
+									class="btn btn-primary btn-md" style="float: right;"
+									ng-click="goNext()">
+									Next Report<i class="fa fa-arrow-right"></i>
+								</button>
+							</div>
 						</div>
-					</div>
-				</div>
-
-				<div class="row">
-					<div class="col-md-12">
-
-						<accordion close-others="true"
-							ng-show="error != null && error != ''"> <accordion-group
-							is-open="true" panel-class="panel-danger"> <accordion-heading>
-						<i style="font-size: 20px" class="fa fa-exclamation-triangle"
-							aria-hidden="true"></i> Upload and processing error</accordion-heading>
-						<div>{{error}}</div>
+						<div class="row">
+							<div class="col-xs-12">
+								<ng-bind-html ng-show="currentItem != null && currentItem != ''"
+									ng-bind-html="currentItem"> </ng-bind-html>
+							</div>
 						</accordion-group> </accordion>
 					</div>
 				</div>
 
+				<div ng-show="savingError" class="row">
+					<div class="col-md-12">
+						<accordion close-others="true" ng-show="savingError != null && savingError != ''">
+						<accordion-group is-open="true" panel-class="panel-danger">
+						<accordion-heading> <i style="font-size: 20px"
+							class="fa fa-exclamation-triangle" aria-hidden="true"></i> Error saving the context based resource bundle</accordion-heading>
+						<div>{{savingError}}</div>
+					</accordion-group> </accordion>
+						
+					</div>
+				</div>
+
+
+
 				<div class="row">
 					<div class="col-md-12">
 						<div class="pull-left">
-							<button type="button" class="btn btn-primary btn-md"
-								ng-click="step = 0">
-								<i class="fa fa-arrow-left"></i> Back
+							<button type="button" class="btn btn-primary btn-md" ng-click="step = 0">
+								<i class="fa fa-arrow-left"></i> Back to upload
 							</button>
 						</div>
 					</div>
 
 				</div>
 			</div>
+
 		</div>
 	</div>
+</div>
 </div>

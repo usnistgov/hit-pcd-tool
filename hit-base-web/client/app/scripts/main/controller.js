@@ -6,6 +6,7 @@ angular.module('main').controller('MainCtrl',
         //If success, the app is updated according to the role.
         $rootScope.loginDialog = null;
         $rootScope.started = false;
+        $scope.notifications = [];
         $scope.showNotificationPanel = false;
 
         var domainParam = $location.search()['d'] ? decodeURIComponent($location.search()['d']) : null;
@@ -68,8 +69,11 @@ angular.module('main').controller('MainCtrl',
             userInfoService.setCurrentUser(null);
             $scope.username = $scope.password = null;
             $scope.$emit('event:logoutRequest');
-            $location.url('/home');
+           // $location.search({});
+           // $location.url('/cb');
+            $window.location.href = '/gvt/#/home';
             $window.location.reload();
+            
         };
 
         $scope.cancel = function () {
@@ -79,7 +83,6 @@ angular.module('main').controller('MainCtrl',
         $scope.isAuthenticated = function () {
             return userInfoService.isAuthenticated();
         };
-
 
         $scope.isPending = function () {
             return userInfoService.isPending();
@@ -208,7 +211,7 @@ angular.module('main').controller('MainCtrl',
             }
         });
 
-        
+
         $scope.addToHiddenList = function (id) {
             var hiddenIds;
             $localForage.getItem('hiddenNotifications', true).then(function (hiddenIdsResults) {
@@ -257,7 +260,7 @@ angular.module('main').controller('MainCtrl',
                 }
             });
         };
-        
+
         $scope.$on('Keepalive', function () {
             IdleService.keepAlive().then(function (result) {
                 $scope.rawNotifications = angular.copy(result);
@@ -267,15 +270,15 @@ angular.module('main').controller('MainCtrl',
 
         });
 
-//        $rootScope.$on('Keepalive', function () {
-//            IdleService.keepAlive();
-//        });
+        // $rootScope.$on('Keepalive', function () {
+        //     IdleService.keepAlive();
+        // });
 
         IdleService.keepAlive().then(function (result) {
-            $scope.rawNotifications = angular.copy(result);
-            $scope.updateNotifications(result);
-        });
-        
+                $scope.rawNotifications = angular.copy(result);
+                $scope.updateNotifications(result);
+            });
+
         $rootScope.$on('event:execLogout', function () {
             $scope.execLogout();
         });
@@ -817,8 +820,8 @@ angular.module('main').controller('MainCtrl',
                 }
             }
         };
-
-
+/*
+		console.log("get info");
         AppInfo.get().then(function (appInfo) {
                 $rootScope.loadingDomain = true;
                 $rootScope.appInfo = appInfo;
@@ -936,7 +939,7 @@ angular.module('main').controller('MainCtrl',
                 $rootScope.appInfo = {};
                 $rootScope.openCriticalErrorDlg("Failed to fetch the server. Please try again");
             });
-
+*/
 
         $rootScope.displayOwnership = function(dom){
             return dom.owner === userInfoService.getUsername() ? "My Tool Scopes": "Others Tool Scopes";
@@ -948,9 +951,8 @@ angular.module('main').controller('MainCtrl',
 
 
 
-        
-        
-        
+
+
     });
 
 

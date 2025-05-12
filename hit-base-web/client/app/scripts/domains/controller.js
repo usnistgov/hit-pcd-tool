@@ -10,7 +10,16 @@ angular.module('domains')
         $scope.loadingAction = false;
         $scope.loadingDomains = false;
         $scope.domainsErrors = null;
+        
+        
+        $scope.getAppInfo = function(){
+                return $rootScope.appInfo;
+        };
 
+		$scope.getAppURL = function () {
+        	return $rootScope.appInfo.url;
+    	};
+        
         $scope.hasDomainAccess = function (domain) {
             return userInfoService.isAuthenticated() && (userInfoService.isAdmin() || (domain != null && domain.owner === userInfoService.getUsername()));
         };
@@ -33,6 +42,7 @@ angular.module('domains')
                         $scope.errorDomain = null;
                         $scope.userDomain = angular.copy(domain);
                         $scope.originalUserDomain = angular.copy($scope.userDomain);
+						$scope.domainForm.$setPristine();
                         $scope.loadingDomain = false;
                     } else {
                         $scope.loadingDomain = false;
@@ -41,11 +51,16 @@ angular.module('domains')
                     $scope.loadingDomain = false;
                 }
             }, waitingTime);
+            
+            
         };
 
-        $scope.openDomain = function (domain) {
-        	var url = $window.location.protocol + "//" + $window.location.host + $window.location.pathname + "#/home?d="+ domain.domain;
-        	$window.open(url, "open_toolscope_page",'_blank');
+        $scope.getDomainUrl = function (domain) {
+			if(domain && domain.options){
+				return $scope.getAppURL() + "/#/?d="+ domain.options.DOMAIN_CUSTOM_URL;
+			}else{
+				return null;
+			}
         };
 
         $scope.displayScope = function(scope){
