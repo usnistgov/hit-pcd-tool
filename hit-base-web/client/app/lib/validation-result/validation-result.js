@@ -38,7 +38,7 @@
   ]);
 
   mod
-  .controller('ValidationResultCtrl', ['$scope', '$filter', '$modal', '$rootScope', 'ValidationResultHighlighter', '$sce', 'NewValidationResult', '$timeout', 'ServiceDelegator', 'SettingsService', 'TestExecutionService', 'StorageService', function ($scope, $filter, $modal, $rootScope, ValidationResultHighlighter, $sce, NewValidationResult, $timeout, ServiceDelegator, SettingsService, TestExecutionService,StorageService) {
+    .controller('ValidationResultCtrl', ['$scope', '$filter', '$modal', '$rootScope', 'ValidationResultHighlighter', '$sce', 'NewValidationResult', '$timeout', 'ServiceDelegator', 'SettingsService', 'TestExecutionService', 'StorageService', function ($scope, $filter, $modal, $rootScope, ValidationResultHighlighter, $sce, NewValidationResult, $timeout, ServiceDelegator, SettingsService, TestExecutionService,StorageService) {
     	$scope.validationTabs = new Array();
       $scope.currentType = null;
       $scope.settings = SettingsService;
@@ -54,7 +54,6 @@
         informationals: false,
         affirmatives: false,
         specerrors: false
-
       };
 
       $scope.subActive = {
@@ -218,7 +217,6 @@
           $scope.checkboxConfig['informationals'] = {};
           $scope.checkboxConfig['specerrors'] = {};
 
-
           // if($scope.validationResult.errors && $scope.validationResult.errors.categories) {
           //     angular.forEach($scope.validationResult.errors.categories, function (category) {
           //         $scope.checkboxConfig['errors'][category.title] = false;
@@ -251,7 +249,6 @@
           $scope.failuresConfig.informationals.checked = false;
           $scope.failuresConfig.affirmatives.checked = false;
           $scope.failuresConfig.specerrors.checked = false;
-
           $scope.firstLoaded = false;
           //$scope.hideAllFailures();
           $scope.active = {};
@@ -346,7 +343,6 @@
       this.hideFailures(this.histMarksMap['informationals']);
       this.hideFailures(this.histMarksMap['alerts']);
       this.hideFailures(this.histMarksMap['specerrors']);
-
     };
 
     ValidationResultHighlighter.prototype.showFailures = function (type, category) {
@@ -546,7 +542,7 @@
         } else if (entry['classification'] === 'Informational' || entry['classification'] === 'Info') {
           this.addResult(this.informationals, entry);
         } else if (entry['classification'] === 'Spec Error') {
-            this.addResult(this.specerrors, entry);
+          this.addResult(this.specerrors, entry);
         }
       } catch (error) {
         console.log(error);

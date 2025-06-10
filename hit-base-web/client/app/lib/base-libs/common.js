@@ -247,7 +247,7 @@ angular.module('format').factory('MessageValidatorClass', function ($http, $q, $
         this.format = format;
     };
 
-    MessageValidatorClass.prototype.validate = function (testContextId, content, nav, contextType, dqaCodes, facilityId) {
+    MessageValidatorClass.prototype.validate = function (testContextId, content, nav, contextType, dqaCodes, facilityId,useHttp) {
         var delay = $q.defer();
         if (this.format && this.format != null) {
             $http.post('api/' + this.format + '/testcontext/' + testContextId + '/validateMessage', angular.fromJson({
@@ -255,7 +255,8 @@ angular.module('format').factory('MessageValidatorClass', function ($http, $q, $
                 "contextType": contextType,
                 "dqaCodes": dqaCodes,
                 "facilityId": facilityId,
-                "nav": nav
+                "nav": nav,
+				"useHttp": useHttp
             })).then(
                 function (object) {
                     try {

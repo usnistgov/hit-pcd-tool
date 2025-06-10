@@ -387,6 +387,11 @@ angular.module('cf')
         $scope.resized = false;
         $scope.selectedItem = null;
         $scope.activeTab = 0;
+		
+		
+		$scope.options={
+			useHttp:StorageService.get(StorageService.USEHTTP) !== undefined && StorageService.get(StorageService.USEHTTP) !== null ? StorageService.get(StorageService.USEHTTP): true
+		};
 
         $scope.tError = null;
         $scope.tLoading = false;
@@ -520,7 +525,7 @@ angular.module('cf')
                     var id = $scope.cf.testCase.testContext.id;
                     var content = $scope.cf.message.content;
                     var label = $scope.cf.testCase.label;
-                    var validated = ServiceDelegator.getMessageValidator($scope.testCase.testContext.format).validate(id, content, null, "Free", $scope.cf.testCase.testContext.dqa === true ? $scope.dqaCodes : [], "1223");
+                    var validated = ServiceDelegator.getMessageValidator($scope.testCase.testContext.format).validate(id, content, null, "Free", $scope.cf.testCase.testContext.dqa === true ? $scope.dqaCodes : [], "1223", $scope.useHttp());
                     validated.then(function (mvResult) {
                         $scope.vLoading = false;
                         $scope.loadValidationResult(mvResult);
@@ -752,8 +757,35 @@ angular.module('cf')
                 }
             });
         };
+		
+		$scope.hasExternalValueSet = function(){
+			 var ctx = $scope.cf;
+			  if (!ctx || !ctx.testCase || !ctx.testCase.testContext) {
+			    return false;
+			  }
+			  var vocab = ctx.testCase.testContext.vocabularyLibrary;
+			  if (!vocab || !vocab.json || !vocab.json.externalValueSetDefinitions) {
+			    return false;
+			  }
+			  return Array.isArray(vocab.json.externalValueSetDefinitions)
+			         && vocab.json.externalValueSetDefinitions.length > 0;
+			};
 
-
+			$scope.useHttp = function(){
+				if ($scope.hasExternalValueSet() && $scope.options.useHttp ){
+					return true;
+				}else{
+					return false;
+				}
+			}
+			
+			$scope.onUseHttpChange = function(){
+				StorageService.set(StorageService.USEHTTP,$scope.options.useHttp);
+			}
+			
+			
+		
+			
     }]);
 
 
@@ -954,7 +986,7 @@ angular.module('cf')
                         $scope.groupScopes = [$scope.allGroupScopes[0]];
                     }
 					var tmp = StorageService.get(StorageService.CF_MANAGE_SELECTED_TESTPLAN_TYPE_KEY);
-					$scope.selectedScope.key = tmp && tmp != null ? tmp : $scope.groupScopes[1].key;
+					$scope.selectedScope.key = tmp && tmp != null ? tmp : $scope.groupScopes[0].key;
 					
 //                    $scope.selectedScope.key = $scope.groupScopes[0].key;
                     $scope.testcase = null;

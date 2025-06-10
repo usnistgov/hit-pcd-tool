@@ -86,21 +86,35 @@ var httpHeaders,
 
 //the message to be shown to the user
 var msg = {};
+
 app.config(function ($routeProvider, $httpProvider, localStorageServiceProvider, KeepaliveProvider, IdleProvider, NotificationProvider, $provide) {
 
     localStorageServiceProvider
         .setPrefix('hit-app')
         .setStorageType('sessionStorage');
 
+		var originalWhen = $routeProvider.when;
+        $routeProvider.when = function (path, route) {
+            route.resolve || (route.resolve = {});
+			
+            angular.extend(route.resolve, {
+                preRouteLoading: preRouteLoading
+											            
+            });			
+            return originalWhen.call($routeProvider, path, route);
+        };
+		
+		
     $routeProvider
         .when('/', {
             templateUrl: 'views/home.html'
         })
         .when('/home', {
-            templateUrl: 'views/home.html'
+			controller: 'HomeCtrl',
+            templateUrl: 'views/home.html'	
         })
         .when('/doc', {
-            templateUrl: 'views/documentation/documentation.html'
+            templateUrl: 'views/documentation/documentation.html'		
         })
         .when('/setting', {
             templateUrl: 'views/setting.html'
@@ -118,7 +132,8 @@ app.config(function ($routeProvider, $httpProvider, localStorageServiceProvider,
             }
         })
         .when('/cf', {
-            templateUrl: 'views/cf/cf.html'
+			controller: 'CFEnvCtrl',
+            templateUrl: 'views/cf/cf.html'					
         })
         .when('/cb', {
             templateUrl: 'views/cb/cb.html'
@@ -214,6 +229,147 @@ app.config(function ($routeProvider, $httpProvider, localStorageServiceProvider,
 
 
 });
+
+var preRouteLoading = function(User, StorageService, $q, DomainsManager, userInfoService, $rootScope, $filter, AppInfo, $location) {
+	var domainParam = $location.search()['d'] ? decodeURIComponent($location.search()['d']) : null;
+	if (domainParam != undefined && domainParam != null) {
+		StorageService.set(StorageService.APP_SELECTED_DOMAIN, domainParam);
+	}
+	var tasks = [];
+	$rootScope.loadingDomain = true;
+	if ($rootScope.appInfo == null || Object.keys($rootScope.appInfo).length === 0 || userInfoService.getCurrentUser() === undefined || userInfoService.getCurrentUser() === null) {
+		tasks.push(
+			//1	
+			function() {
+				return AppInfo.get().then(function(appInfo) {
+					var domainParam = $location.search()['d'] ? decodeURIComponent($location.search()['d']) : null;
+					$rootScope.appInfo = appInfo;
+					$rootScope.apiLink = $rootScope.appInfo.url + $rootScope.appInfo.apiDocsPath;
+					StorageService.set(StorageService.APP_STATE_TOKEN, appInfo.rsbVersion);
+
+
+
+					$rootScope.appInfo.selectedDomain = null;
+					$rootScope.domainsByOwner = {
+						'my': [],
+						'others': []
+					};
+					return "load appinfo";
+				});
+			}
+		);
+	}
+
+	// 2) Load user‐info task
+	if (userInfoService.getCurrentUser() === undefined || userInfoService.getCurrentUser() === null) {
+		tasks.push(
+			function() {
+				return userInfoService.loadFromServer().then(function(response) {
+					if (response !== null && response.accountId != null && response.accountId !== undefined) {
+						userInfoService.setCurrentUser(response);
+						User.initUser(response);
+					} else {
+						$rootScope.createGuestIfNotExist();
+					}
+					return "load userinfo";
+				})
+			});
+	}
+
+	// 3) Domain‐lookup task
+	if ($rootScope.domain == null || $rootScope.appInfo.domains == null || $rootScope.domain.domain !== StorageService.get(StorageService.APP_SELECTED_DOMAIN) || userInfoService.getCurrentUser() === undefined || userInfoService.getCurrentUser() === null) {
+		tasks.push(
+			function() {
+				return DomainsManager.getDomains().then(function(domains) {
+					var storedDomain = StorageService.get(StorageService.APP_SELECTED_DOMAIN) ? StorageService.get(StorageService.APP_SELECTED_DOMAIN) : 'default';
+					var domainFound = null;
+					$rootScope.appInfo.domains = domains;
+					if ($rootScope.appInfo.domains != null) {
+						$rootScope.initDomainsByOwner();
+						if ($rootScope.appInfo.domains.length === 1) {
+							domainFound = $rootScope.appInfo.domains[0].domain;
+						} else if (storedDomain != null) {
+							$rootScope.appInfo.domains = $filter('orderBy')($rootScope.appInfo.domains, 'position'); //sorting by position but position doesn't exist...
+							for (var i = 0; i < $rootScope.appInfo.domains.length; i++) {
+								if ($rootScope.appInfo.domains[i].domain === storedDomain) {
+									domainFound = $rootScope.appInfo.domains[i].domain;
+									break;
+								}
+							}
+						}
+						if (domainFound == null) {
+							for (var i = 0; i < $rootScope.appInfo.domains.length; i++) {
+								if ($rootScope.appInfo.domains[i].domain === "default") {
+									domainFound = $rootScope.appInfo.domains[i].domain;
+									break;
+								}
+							}
+							if (domainFound == null) {
+								$rootScope.appInfo.domains = $filter('orderBy')($rootScope.appInfo.domains, 'position'); //sorting by position but position doesn't exist...
+								domainFound = $rootScope.appInfo.domains[0].domain;
+							}
+						}
+						return DomainsManager.getDomainByKey(domainFound);
+					}
+				}).then(function(result) {
+					$rootScope.clearDomainSession();
+					$rootScope.appInfo.selectedDomain = result.domain;
+					StorageService.set(StorageService.APP_SELECTED_DOMAIN, result.domain);
+					$rootScope.domain = result;
+					return "domain stuff";
+				}, function(error) {
+					$rootScope.openUnknownDomainDlg();
+				}
+				)
+			});
+	}
+
+	function runInSeries(taskFns) {
+		var results = [];
+		// Start with a “already-resolved” $q promise
+		return taskFns.reduce(function(prevPromise, taskFn) {
+			return prevPromise
+				.then(function() {
+					// Call the next task — this returns a $q promise
+					return taskFn();
+				})
+				.then(function(response) {
+					// Collect each resolved value
+					results.push(response);
+					// Return nothing (or return results if you like), 
+					// but what matters is that the next .then doesn’t get a rejected value.
+					return;
+				});
+		}, $q.when()) // initial resolved promise
+			.then(function() {
+				// All tasks have run; resolve with the full results array
+//				console.log(results);
+				return results;
+			});
+	}
+
+	// If there are no tasks, resolve immediately:
+	if (tasks.length === 0) {
+		$rootScope.loadingDomain = false;
+
+	} else {
+		// Wait for all tasks to finish:
+
+		return runInSeries(tasks.splice(0))
+			.then(function(allResponses) {
+				$rootScope.loadingDomain = false;
+
+				//							  console.log("all done tasks");
+
+			})
+			.catch(function(err) {
+				// If any single promise rejects, you land here immediately.
+				console.error('Sequence aborted due to:', err);
+			});
+
+
+	}
+};
 
 
 app.factory('interceptor1', function ($q, $rootScope, $location, StorageService, $window) {
@@ -347,130 +503,13 @@ app.factory('interceptor4', function ($q, $rootScope, $location, StorageService,
 });
 
 
+
+
 app.run(function (Session, $rootScope, $location, $modal, TestingSettings, AppInfo, $q, $sce, $templateCache, $compile, StorageService, $window, $route, $timeout, $http, User, Idle, Transport, IdleService, userInfoService, base64, Notification, DomainsManager, $filter) {
+	   
+	
 	StorageService.set(StorageService.ACTIVE_SUB_TAB_KEY,null);
-    var domainParam = $location.search()['d'] ? decodeURIComponent($location.search()['d']) : null;
 
-	$rootScope.appLoad = function (domainParam,redirect){
-		if (domainParam === undefined || domainParam === null){
-			domainParam = $location.search()['d'] ? decodeURIComponent($location.search()['d']) : null;
-		}
-		AppInfo.get().then(function (appInfo) {
-                $rootScope.loadingDomain = true;
-                $rootScope.appInfo = appInfo;
-                $rootScope.apiLink = $rootScope.appInfo.url + $rootScope.appInfo.apiDocsPath;
-                httpHeaders.common['rsbVersion'] = appInfo.rsbVersion;
-                var previousToken = StorageService.get(StorageService.APP_STATE_TOKEN);
-                if (previousToken != null && previousToken !== appInfo.rsbVersion) {
-                    $rootScope.openVersionChangeDlg();
-                }
-                StorageService.set(StorageService.APP_STATE_TOKEN, appInfo.rsbVersion);
-
-                if (domainParam != undefined && domainParam != null) {
-                    StorageService.set(StorageService.APP_SELECTED_DOMAIN, domainParam);
-                }
-                var storedDomain = StorageService.get(StorageService.APP_SELECTED_DOMAIN);
-
-                var domainFound = null;
-                $rootScope.domain = null;
-                $rootScope.appInfo.selectedDomain = null;
-                $rootScope.domainsByOwner = {
-                    'my': [],
-                    'others':[]
-                };
-                DomainsManager.getDomains().then(function (domains) {
-                    $rootScope.appInfo.domains = domains;
-                    if ($rootScope.appInfo.domains != null) {                    
-                		$rootScope.initDomainsByOwner();
-                    if ($rootScope.appInfo.domains.length === 1) {
-                        domainFound = $rootScope.appInfo.domains[0].domain;
-                    } else if (storedDomain != null) {
-                        $rootScope.appInfo.domains = $filter('orderBy')($rootScope.appInfo.domains, 'position'); //sorting by position but position doesn't exist...
-                        for (var i = 0; i < $rootScope.appInfo.domains.length; i++) {
-                            if ($rootScope.appInfo.domains[i].domain === storedDomain) {
-                                domainFound = $rootScope.appInfo.domains[i].domain;
-                                break;
-                            }
-                        }
-                    }
-                    if (domainFound == null) {                        	
-                    	for (var i = 0; i < $rootScope.appInfo.domains.length; i++) {
-                            if ($rootScope.appInfo.domains[i].domain === "default") {
-                                domainFound = $rootScope.appInfo.domains[i].domain;
-                                break;
-                            }
-                        }
-                    	if (domainFound == null) {                        	
-                            $rootScope.appInfo.domains = $filter('orderBy')($rootScope.appInfo.domains, 'position'); //sorting by position but position doesn't exist...
-                            domainFound = $rootScope.appInfo.domains[0].domain;
-                    	}
-                    }
-
-                        $rootScope.clearDomainSession();
-                        DomainsManager.getDomainByKey(domainFound).then(function (result) {
-                            $rootScope.appInfo.selectedDomain = result.domain;
-                            StorageService.set(StorageService.APP_SELECTED_DOMAIN, result.domain);
-                            $rootScope.domain = result;
-                            $rootScope.loadingDomain = false;
-                            
-							if (redirect != undefined && redirect === true){
-								$location.url('/home'); 
-							}							  
-                            
-                            
-                            $timeout(function () {
-                                Transport.configs = {};
-                                Transport.getDomainForms($rootScope.domain.domain).then(function (transportForms) {
-                                    $rootScope.transportSupported = transportForms != null && transportForms.length > 0;
-                                    if ($rootScope.transportSupported) {
-                                        angular.forEach(transportForms, function (transportForm) {
-                                            var protocol = transportForm.protocol;
-                                            if (!Transport.configs[protocol]) {
-                                                Transport.configs[protocol] = {};
-                                            }
-                                            if (!Transport.configs[protocol]['forms']) {
-                                                Transport.configs[protocol]['forms'] = {};
-                                            }
-                                            Transport.configs[protocol]['forms'] = transportForm;
-                                            Transport.configs[protocol]['error'] = null;
-											Transport.configs[protocol]['data'] = null;
-                                            Transport.configs[protocol]['description'] = transportForm.description;
-                                            Transport.configs[protocol]['key'] = transportForm.protocol;
-                                            Transport.getConfigData($rootScope.domain.domain, protocol).then(function (data) {
-                                                Transport.configs[protocol]['data'] = data;
-                                                Transport.configs[protocol]['open'] = {
-                                                    ta: true,
-                                                    sut: false
-                                                };
-                                            }, function (error) {
-                                                Transport.configs[protocol]['error'] = error.data;
-                                            });
-                                        });
-                                    }
-                                }, function (error) {
-                                    $scope.error = "No transport configs found.";
-                                });
-                            }, 500);
-                        }, function (error) {
-                            $rootScope.loadingDomain = true;
-                            $rootScope.openUnknownDomainDlg();
-                        });
-                    } else {
-                        $rootScope.openCriticalErrorDlg("No Tool scope found. Please contact the administrator");
-                    }
-                }, function (error) {
-                    $rootScope.openCriticalErrorDlg("No Tool scope found. Please contact the administrator");
-                });
-            }
-            , function (error) {
-                $rootScope.loadingDomain = true;
-                $rootScope.appInfo = {};
-                $rootScope.openCriticalErrorDlg("Failed to fetch the server. Please try again");
-            });
-            
-	};
-
-    $rootScope.appLoad(domainParam);
 
 
     $rootScope.appInfo = {};
@@ -548,7 +587,15 @@ app.run(function (Session, $rootScope, $location, $modal, TestingSettings, AppIn
         if (domain != null) {
             StorageService.set(StorageService.APP_SELECTED_DOMAIN, domain);
 //            $location.search('d', domain);                   
-            $rootScope.appLoad(null,true);
+//            $rootScope.appLoad(null,true);
+				//will reload no matter where we are 
+				if ($location.url('/home')){
+					$route.reload();
+				}else{
+					$location.path('/home'); 
+				}
+				
+								
         }
     };
     
@@ -709,14 +756,15 @@ app.run(function (Session, $rootScope, $location, $modal, TestingSettings, AppIn
                 if (result.data && result.data != null) {
                     var rs = angular.fromJson(result.data);
                     initUser(rs);                   
-                    if (path !== undefined){         
+                    if (path !== undefined){     
+						//now always load app anyway    
 						if (loadApp){
-							$rootScope.appLoad();
+//							$rootScope.appLoad();
 						}						
 						$location.url(path);      											                                             			
                     }else{
 						if (loadApp){
-							$rootScope.appLoad();
+//							$rootScope.appLoad();
 						}	
 					 $rootScope.$broadcast('event:loginConfirmed');
 					}
@@ -768,7 +816,6 @@ app.run(function (Session, $rootScope, $location, $modal, TestingSettings, AppIn
         httpHeaders.common['Authorization'] = null;
         userInfoService.setCurrentUser(null);
         $http.get('j_spring_security_logout').then(function (result) {
-            $rootScope.createGuestIfNotExist();
             $rootScope.$broadcast('event:logoutConfirmed');            
         });
     });
@@ -874,16 +921,16 @@ app.run(function (Session, $rootScope, $location, $modal, TestingSettings, AppIn
     };
 
     //loadAppInfo();
-    userInfoService.loadFromServer().then(function (currentUser) {
-//        console.log("currentUser=" + angular.toJson(currentUser));
-        if (currentUser !== null && currentUser.accountId != null && currentUser.accountId != undefined) {
-            initUser(currentUser);
-        } else {
-            $rootScope.createGuestIfNotExist();
-        }
-    }, function (error) {
-        $rootScope.createGuestIfNotExist();
-    });
+//    userInfoService.loadFromServer().then(function (currentUser) {
+////        console.log("currentUser=" + angular.toJson(currentUser));
+//        if (currentUser !== null && currentUser.accountId != null && currentUser.accountId != undefined) {
+//            initUser(currentUser);
+//        } else {
+//            $rootScope.createGuestIfNotExist();
+//        }
+//    }, function (error) {
+//        $rootScope.createGuestIfNotExist();
+//    });
 
 
     $rootScope.getAppInfo = function () {
@@ -947,9 +994,6 @@ app.run(function (Session, $rootScope, $location, $modal, TestingSettings, AppIn
         return $rootScope.getAppInfo().options && ($rootScope.getAppInfo().options['TOOL_SCOPE_SELECTON_DISPLAYED'] === "true");
     };
     
-    $rootScope.isUserLoginSupported = function () {
-        return $rootScope.getAppInfo().options && ($rootScope.getAppInfo().options['USER_LOGIN_SUPPORTED'] === "true");
-    };
        
     $rootScope.isDevTool = function () {
 	    return $rootScope.getAppInfo().options && ($rootScope.getAppInfo().options['IS_DEV_TOOL'] === "true");

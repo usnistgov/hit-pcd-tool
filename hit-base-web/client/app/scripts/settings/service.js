@@ -7,7 +7,7 @@ angular.module('hit-settings').factory('SettingsService',['$q','$http','StorageS
                     warnings: true,
                     affirmatives: false,
                     informational: false,
-                    specerrors: false, 
+                    specerrors: true, 
                     ignores: true
                 }
             }

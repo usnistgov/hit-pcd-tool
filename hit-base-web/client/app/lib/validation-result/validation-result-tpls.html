@@ -27,14 +27,14 @@
       </a>
       </li>
 		<li
-          active="active.informationals" ng-if="settings.options.validation.show.informationals"" role="presentation"
+          active="active.informationals" ng-if="settings.options.validation.show.informationals" role="presentation"
           ng-class="{'active':currentType === 'informationals'}"><a ng-click="showValidationTable(validationResult.informationals.categories[0],'informationals')">      <span class="badge failure failure-informationals"
                                                                       ng-bind="validationResult.informationals.categories[0].data.length"></span>
         Informationals
       </a>
       </li>
 		<li
-          active="active.specerrors" ng-if="settings.options.validation.show.specerrors"" role="presentation"
+          active="active.specerrors" ng-if="settings.options.validation.show.specerrors" role="presentation"
           ng-class="{'active':currentType === 'specerrors'}"><a ng-click="showValidationTable(validationResult.specerrors.categories[0],'specerrors')">      <span class="badge failure failure-specerrors"
                                                                       ng-bind="validationResult.specerrors.categories[0].data.length"></span>
         Spec Errors
@@ -42,7 +42,6 @@
       </li>
 <li>
 </li>
-
     </ul>
 
     <div ng-show="currentType != null && currentType">

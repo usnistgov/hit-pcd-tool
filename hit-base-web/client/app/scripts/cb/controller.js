@@ -1459,6 +1459,10 @@ angular.module('cb')
     $scope.domain = null;
     $scope.protocol = null;
     $scope.hasNonPrintable = false;
+	$scope.options={
+		useHttp: StorageService.get(StorageService.USEHTTP) !== undefined && StorageService.get(StorageService.USEHTTP) !== null ? StorageService.get(StorageService.USEHTTP): true
+	};
+	
 
     $scope.showDQAOptions = function () {
       var modalInstance = $modal.open({
@@ -1581,7 +1585,7 @@ angular.module('cb')
             $scope.vLoading = true;
             $scope.vError = null;
             TestExecutionService.deleteTestStepValidationReport($scope.testStep);
-            var validator = ServiceDelegator.getMessageValidator($scope.testStep.testContext.format).validate($scope.testStep.testContext.id, $scope.cb.message.content, $scope.testStep.nav, "Based", [], "1223");
+            var validator = ServiceDelegator.getMessageValidator($scope.testStep.testContext.format).validate($scope.testStep.testContext.id, $scope.cb.message.content, $scope.testStep.nav, "Based", [], "1223", $scope.useHttp());
             validator.then(function (mvResult) {
               $scope.vLoading = false;
               $scope.setTestStepValidationReport(mvResult);
@@ -1821,6 +1825,31 @@ angular.module('cb')
       });
     };
 
+	$scope.hasExternalValueSet = function(){
+		  var ctx = $scope.cb;
+		  if (!ctx || !ctx.testCase || !ctx.testCase.testContext) {
+			  return false;
+		  }
+		  var vocab = ctx.testCase.testContext.vocabularyLibrary;
+		  if (!vocab || !vocab.json || !vocab.json.externalValueSetDefinitions) {
+			  return false;
+		  }
+		  return Array.isArray(vocab.json.externalValueSetDefinitions)
+			  && vocab.json.externalValueSetDefinitions.length > 0;
+	  };
+
+	  $scope.useHttp = function() {
+		  if ($scope.hasExternalValueSet() && $scope.options.useHttp) {
+			  return true;
+		  } else {
+			  return false;
+		  }
+	  }
+
+	  $scope.onUseHttpChange = function() {
+		  StorageService.set(StorageService.USEHTTP, $scope.options.useHttp);
+	  }
+	
 
   }]);
 

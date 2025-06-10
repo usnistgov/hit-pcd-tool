@@ -415,10 +415,9 @@
                         templateUrl: "NotificationErrorTemplate.html",
                         scope: $rootScope,
                         delay: 10000
-                      });                 
+                      });                         
                 }).finally(function () {
                     $scope.loading = false;
-
                 });
     		}else if (report && report.userTestStepReports === undefined){
                 $scope.loading = true;
@@ -435,7 +434,7 @@
                         templateUrl: "NotificationErrorTemplate.html",
                         scope: $rootScope,
                         delay: 10000
-                      });           
+                      });                         
                 }).finally(function () {
                     $scope.loading = false;
                 });

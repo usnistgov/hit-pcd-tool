@@ -18,4 +18,4 @@ hit-base-web/client/node_modules
 hit-base-web/client/app/bower_components
 hit-base-web/client/.tmp
 hit-base-web/client/.sass-cache
-hit-base-web/src/
+hit-base-web/src/*

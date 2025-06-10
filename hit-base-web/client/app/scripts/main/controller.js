@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('main').controller('MainCtrl',
-    function ($scope, $rootScope, i18n, $location, userInfoService, $modal, $filter, base64, $http, Idle, Notification, IdleService, StorageService, TestingSettings, Session, AppInfo, User, $templateCache, $window, $sce, DomainsManager, Transport, $timeout, CBTestPlanListLoader,CBTestPlanLoader,CachingService,$localForage) {
+    function ($scope, $rootScope, i18n, $location, userInfoService, $modal, $filter, base64, $http, Idle, Notification, IdleService, StorageService, TestingSettings, Session, AppInfo, User, $templateCache, $window, $sce, DomainsManager, Transport, $timeout, CBTestPlanListLoader,CBTestPlanLoader,$localForage,$route) {
         //This line fetches the info from the server if the user is currently logged in.
         //If success, the app is updated according to the role.
         $rootScope.loginDialog = null;
@@ -69,10 +69,11 @@ angular.module('main').controller('MainCtrl',
             userInfoService.setCurrentUser(null);
             $scope.username = $scope.password = null;
             $scope.$emit('event:logoutRequest');
-           // $location.search({});
-           // $location.url('/cb');
-            $window.location.href = '/gvt/#/home';
-            $window.location.reload();
+			if ($location.url('/home')){
+				$route.reload();
+			}else{
+				$location.path('/home'); 
+			}
             
         };
 
@@ -812,6 +813,10 @@ angular.module('main').controller('MainCtrl',
 
 
         $rootScope.initDomainsByOwner = function(){
+			$rootScope.domainsByOwner = {
+			            'my': [],
+			            'others':[]
+			        };
             for (var i = 0; i < $rootScope.appInfo.domains.length; i++) {
                 if ($rootScope.appInfo.domains[i].owner === userInfoService.getUsername()) {
                     $rootScope.domainsByOwner['my'].push($rootScope.appInfo.domains[i]);
@@ -1085,6 +1090,20 @@ angular.module('main').controller('ConfirmDialogCtrl', function ($scope, $modalI
         $modalInstance.dismiss('cancel');
     };
 });
+
+
+angular.module('main').controller('HeaderCtrl', ['$scope', function ($scope ) {
+
+
+
+}]);
+
+angular.module('main').controller('HomeCtrl', ['$scope', '$rootScope', function ($scope,$rootScope ) {
+
+
+
+}]);
+
 
 
 

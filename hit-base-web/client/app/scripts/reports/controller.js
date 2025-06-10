@@ -33,7 +33,7 @@ angular.module('reports')
                 $scope.contextType = "*";
                 $scope.resultType = "*";
                 $scope.filterBy();
-				$scope.loadingAll = false;				
+                $scope.loadingAll = false;
             }, function (error) {
                 $scope.loadingAll = false;
                 $scope.error = "Sorry, Cannot load the reports. Please try again. \n DEBUG:" + error;
@@ -164,10 +164,10 @@ angular.module('reports').controller('ReportDetailsCtrl', function ($scope, $mod
                  delay: 10000
                });
           }).finally(function () {
-  			$scope.loading = false;
-      	});
+			$scope.loading = false;
+    	});
 	  }if ($scope.report.type === 'TESTCASE'){
-		  ReportService.getUserTCReport($scope.report.id).then(function (fullReport) {
+		  ReportService.getUserTCReportHTML($scope.report.id).then(function (fullReport) {
 			  $scope.reportItem = fullReport;
           }, function (error) {
               Notification.error({
@@ -177,9 +177,8 @@ angular.module('reports').controller('ReportDetailsCtrl', function ($scope, $mod
                   delay: 10000
                 });
           }).finally(function () {
-  			$scope.loading = false;
-      	});
-
+			$scope.loading = false;
+    	});
 	  }
 
 	  $scope.close = function () {

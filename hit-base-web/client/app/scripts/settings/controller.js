@@ -59,15 +59,17 @@ angular.module('hit-settings').controller('SettingsCtrl',['$scope', '$modalInsta
         $scope.save = function () {
         	SettingsService.set($scope.options);
         	
-        	SettingsService.saveValidationClassifications($scope.domainClassifications,$rootScope.domain).then(function (result) {
-        		Notification.success({
-                    message: "Validation parameters save successfully!",
-                    templateUrl: "NotificationSuccessTemplate.html",
-                    scope: $rootScope,
-                    delay: 3000
-                  });
-            }, function (error) {
-            });
+        	if ($scope.isAdmin() || $rootScope.isDomainOwner()){
+        		SettingsService.saveValidationClassifications($scope.domainClassifications,$rootScope.domain).then(function (result) {
+            		Notification.success({
+                        message: "Validation parameters save successfully!",
+                        templateUrl: "NotificationSuccessTemplate.html",
+                        scope: $rootScope,
+                        delay: 3000
+                      });
+                }, function (error) {
+                });
+        	}        	
         	
             $modalInstance.close($scope.options);
         };

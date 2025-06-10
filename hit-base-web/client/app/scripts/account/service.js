@@ -146,25 +146,25 @@ angular.module('account').factory('userInfo', ['$resource',
     }
 ]);
 
-angular.module('account').factory('userLoaderService', ['userInfo', '$q',
-    function (userInfo, $q) {
-        var load = function() {
-            var delay = $q.defer();
-            userInfo.get({},
-                function(theUserInfo) {
-                    delay.resolve(theUserInfo);
-                },
-                function() {
-                    delay.reject('Unable to fetch user info');
-                }
-            );
-            return delay.promise;
-        };
-        return {
-            load: load
-        };
-    }
-]);
+//angular.module('account').factory('userLoaderService', ['userInfo', '$q',
+//    function (userInfo, $q) {
+//        var load = function() {
+//            var delay = $q.defer();
+//            userInfo.get({},
+//                function(theUserInfo) {
+//                    delay.resolve(theUserInfo);
+//                },
+//                function() {
+//                    delay.reject('Unable to fetch user info');
+//                }
+//            );
+//            return delay.promise;
+//        };
+//        return {
+//            load: load
+//        };
+//    }
+//]);
 
 angular.module('account').factory('notificationService', function ($http, $q) {
     var notificationService = function () { };
@@ -344,8 +344,23 @@ angular.module('account').factory('userInfoService', ['StorageService', 'userLoa
         };
 
         var isAuthenticated = function() {
-            var res =  currentUser !== undefined && currentUser != null && currentUser.authenticated === true;
-            return res;
+//			if (currentUser === undefined || currentUser === null){
+//				loadFromServer().then(function (currentUser) {
+//				        if (currentUser !== null && currentUser.accountId != null && currentUser.accountId != undefined) {
+//							return currentUser !== undefined && currentUser != null && currentUser.authenticated === true;
+//				        } else {
+//				            return false;
+//				        }
+//				    }, function (error) {
+//			    });
+//			}else{
+				 var res =  currentUser !== undefined && currentUser != null && currentUser.authenticated === true;
+                 return res;
+//			}
+			
+			
+//            var res =  currentUser !== undefined && currentUser != null && currentUser.authenticated === true;
+//            return res;
 //            return true;
         };
 

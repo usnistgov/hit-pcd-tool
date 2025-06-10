@@ -1,4 +1,4 @@
-FROM tomcat:9.0.104-jdk17-temurin-noble
+FROM tomcat:9.0.105-jdk17-temurin-noble
 
 ENV JAVA_OPTS="-Xmx4096m -Xms4096m"
 
